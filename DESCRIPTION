@@ -2,8 +2,8 @@ Package: msFeatureCmp
 Type: Package
 Title: Mass Spectrometry Feature Comparator
 Version: 0.1.0
-Author: person("Yijia", "Chen", email="ychen.uoft@gmail.com", role=c("aut", "cre"))
-Maintainer: Yijia Chen <ychen.uoft@gmail.com>
+Author: person("Yijia", "Chen", email="jyc.chen@mail.utoronto.ca", role=c("aut", "cre"))
+Maintainer: Yijia Chen <jyc.chen@mail.utoronto.ca>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: GPL (>= 3) + file LICENSE
@@ -13,3 +13,4 @@ Depends: R (>= 4.1)
 Imports:
     reticulate
 RoxygenNote: 7.1.2
+Roxygen: list(markdown = TRUE)
