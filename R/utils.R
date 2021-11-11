@@ -106,6 +106,24 @@ convertFeaturesToSortedMatrix <- function(featureSet) {
   return(sortedFeatureMatrix)
 }
 
+#' Sorts a matrix by a given column number.
+#'
+#' @param matrix The matrix to sort.
+#' @param column The column number to use as key.
+#' @param descending If TRUE, sorts the matrix by descending values.
+#'
+#' @return The sorted matrix.
+#'
+#' @examples
+#' \dontrun{
+#' m <- matrix(1:9, nrow = 3, ncol = 3)
+#' m[1, 1] <- 2
+#' m[2, 1] <- 1
+#' m[2, 2] <- 6
+#' m[3, 2] <- 5
+#' sortedMatrix <- sortMatrixByColumn(m, descending = TRUE)
+#' sortedMatrix
+#' }
 sortMatrixByColumn <- function(matrix, column = 1, descending = FALSE) {
   # Need to enforce that the column is an integer
   if (typeof(column) != "numeric") {
@@ -116,6 +134,29 @@ sortMatrixByColumn <- function(matrix, column = 1, descending = FALSE) {
   return(sortedMatrix)
 }
 
+#' Finds the first feature in a matrix that has its element at a given key
+#' equal to a given target. If no feature matches the requirement, counts
+#' how many features have the same key less than the target (its rank).
+#'
+#' This function uses binary search, so the feature matrix must be sorted
+#' ascending in the key column.
+#'
+#' @param sortedFeatureMatrix The sorted feature matrix to search.
+#' @param key The column in the matrix to search in.
+#' @param target The target value to search for, as a number.
+#'
+#' @return The index of the first feature that has its element at the given key
+#' equal to the given target, if it exists, and the rank of the matrix
+#' otherwise.
+#'
+#' @examples
+#' \dontrun{
+#' m <- matrix(1:10, nrow = 5, ncol = 2)
+#' m[2, 1] <- 3
+#' m[4, 1] <- 3
+#' rank <- findFirstFeature(m, key = 1, target = 3)
+#' rank  # Should be 2
+#' }
 findFirstFeature <- function(sortedFeatureMatrix, key = RT_IDX, target = 0) {
   firstIdx <- 1
   lastIdx <- nrow(sortedFeatureMatrix)
@@ -141,12 +182,52 @@ findFirstFeature <- function(sortedFeatureMatrix, key = RT_IDX, target = 0) {
   return(resultIdx)
 }
 
+#' Finds the first feature in a feature matrix that has its retention time equal
+#' to a given target. If no such feature exists, counts how many features have
+#' retention time less than the target (the matrix rank).
+#'
+#' This function searches the feature matrix by sorting it first, and then
+#' applying binary search.
+#'
+#' @param featureMatrix The feature matrix to search.
+#' @param target The target retention time, as a number.
+#'
+#' @return The index of the first feature that has its retention time equal to
+#' the given target, if it exists, and the rank of the matrix otherwise.
+#'
+#' @examples
+#' \dontrun{
+#' features <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
+#' featureMatrix <- convertFeaturesToSortedMatrix(features)
+#' rank <- findFirstFeatureByRT(featureMatrix, 810)
+#' rank  # TODO: what does this return?
+#' }
 findFirstFeatureByRT <- function(featureMatrix, target) {
   sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, RT_IDX)
   targetIdx <- findFirstFeature(sortedFeatureMatrix, RT_IDX, target)
   return(sortedFeatureMatrix[targetIdx])
 }
 
+#' Finds the first feature in a feature matrix that has its mass-to-charge equal
+#' to a given target. If no such feature exists, counts how many features have
+#' mass-to-charge values less than the target (the matrix rank).
+#'
+#' This function searches the feature matrix by sorting it first, and then
+#' applying binary search.
+#'
+#' @param featureMatrix The feature matrix to search.
+#' @param target The target mass-to-charge value, as a number.
+#'
+#' @return The index of the first feature that has its mass-to-charge equal to
+#' the given target, if it exists, and the rank of the matrix otherwise.
+#'
+#' @examples
+#' \dontrun{
+#' features <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
+#' featureMatrix <- convertFeaturesToSortedMatrix(features)
+#' rank <- findFirstFeatureByMZ(featureMatrix, 300)
+#' rank  # TODO: what does this return?
+#' }
 findFirstFeatureByMZ <- function(featureMatrix, target) {
   sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, MZ_IDX)
   targetIdx <- findFirstFeature(sortedFeatureMatrix, MZ_IDX, target)
