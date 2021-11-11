@@ -1,7 +1,9 @@
-#' Loads a raw mass spectrometry run into memory. The MS file must be mzML
-#' format.
+# This file contains the helper functions for the msFeatureCmp package.
+
+#' Loads a raw mass spectrometry run into memory as an MSExperiment object. The
+#' input MS file must be in mzML (OpenMS) format.
 #'
-#' @param filePath The location of the mzML file.
+#' @param filePath The location of the mzML file, as a string.
 #'
 #' @return The in-memory representation of the MS run, as an MSExperiment.
 #'
@@ -15,10 +17,11 @@ loadMSFile <- function(filePath) {
   return(experiment)
 }
 
-#' Loads a mass spectrometry feature set into memory. The feature file must be
-#' featureXML format.
+#' Loads a mass spectrometry feature set (containing found features) into
+#' memory as a FeatureMap. The feature file must be in featureXML (OpenMS)
+#' format.
 #'
-#' @param filePath The location of the featureXML file.
+#' @param filePath The location of the featureXML file, as a string.
 #'
 #' @return The in-memory representation of the feature set, as a FeatureMap.
 #'
@@ -32,18 +35,21 @@ loadFeatureFile <- function(filePath) {
   return(featureSet)
 }
 
-#' Compares two features to determine if they are identical.
+#' Compares two features to determine if they are similar.
 #'
-#' Features can be considered to be identical if their retention times and
-#' mass-to-charges are within some thresholds of each other (which can be
+#' We consider features to be similar if their retention times and mass-to
+#' charge values are within some fixed thresholds of each other (which can be
 #' provided by the user).
 #'
-#' @param feature1 The first feature to compare
-#' @param feature2 The second feature to compare
-#' @param rtThreshold The retention time threshold to use
-#' @param mzThreshold The mass-to-charge threshold to use
+#' The default thresholds have been experimentally determined to provide the
+#' "best" results.
 #'
-#' @return TRUE if the features are identical; FALSE otherwise.
+#' @param feature1 The first feature to compare, as a Feature.
+#' @param feature2 The second feature to compare, as a Feature.
+#' @param rtThreshold The retention time threshold to use, as a float.
+#' @param mzThreshold The mass-to-charge threshold to use, as a float.
+#'
+#' @return TRUE if the two features are similar; FALSE otherwise.
 #'
 #' @examples
 #' \dontrun{
@@ -53,46 +59,96 @@ loadFeatureFile <- function(filePath) {
 #' featureB <- ropenms$Feature()
 #' featureB$setRT(6)
 #' featureB$setMZ(300.005)
-#' identicalFeatures(featureA, featureB)  # TRUE
+#' similarFeatures(featureA, featureB)  # Returns TRUE
 #' }
-identicalFeatures <- function(feature1, feature2, rtThreshold = 5, mzThreshold = 0.01) {
-  isIdentical <- FALSE
+similarFeatures <- function(feature1, feature2, rtThreshold = 5,
+                              mzThreshold = 0.01) {
+  isSimilar <- FALSE
   if (abs(feature1$getRT() - feature2$getRT()) <= rtThreshold &
       abs(feature1$getMZ() - feature2$getMZ()) <= mzThreshold) {
-    isIdentical <- TRUE
+    isSimilar <- TRUE
   }
-  return(isIdentical)
+  return(isSimilar)
 }
 
-#' Converts a set of features, as a FeatureMap, to a matrix of features.
+#' Converts a set of features, as a FeatureMap, into a matrix of features.
 #'
 #' Each row of the matrix represents a feature, and contains its retention
-#' time (RT), mass-to-charge (m/z), and signal intensity in that order. The
-#' resulting matrix will be sorted by descending signal intensity.
+#' time, mass-to-charge, and signal intensity values, in that order. The
+#' resulting matrix will be also sorted by descending signal intensity.
 #'
-#' @param features The set of features to convert, as a FeatureMap.
+#' @param featureSet The set of features to convert, as a FeatureMap.
 #'
-#' @return The corresponding sorted matrix for the input features.
+#' @return The corresponding sorted matrix for the features.
 #'
 #' @examples
 #' \dontrun{
-#' read feature map
-#' convert feature map
+#' featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
+#' featureMatrix <- convertFeaturesToSortedMatrix(featureSet)
+#' featureMatrix[1]  # TODO: what does this return?
 #' }
-convertFeaturesToSortedMatrix <- function(features) {
-  RT_IDX <- 1
-  MZ_IDX <- 2
-  IT_IDX <- 3
-
-  featureMatrix <- matrix(nrow = 3, ncol = features$size())
+convertFeaturesToSortedMatrix <- function(featureSet) {
+  # Start with an empty matrix of the correct size, and fill it one feature
+  # at a time.
+  featureMatrix <- matrix(nrow = 3, ncol = featureSet$size())
   rowIter <- 1
-  for (feature in features) {
+  for (feature in featureSet) {
+    # Global constants are defined in comparator.R
     featureMatrix[rowIter, RT_IDX] <- feature$getRT()
     featureMatrix[rowIter, MZ_IDX] <- feature$getMZ()
     featureMatrix[rowIter, IT_IDX] <- feature$getIntensity()
     rowIter <- rowIter + 1
   }
 
-  sortedFeatureMatrix <- featureMatrix[order(featureMatrix[,"V3", decreasing = TRUE]),]
+  # Sort by the third column (signal intensity), descending
+  sortedFeatureMatrix <- featureMatrix[order(featureMatrix[ , "V3",
+                                             decreasing = TRUE]), ]
   return(sortedFeatureMatrix)
+}
+
+sortMatrixByColumn <- function(matrix, column = 1, descending = FALSE) {
+  # Need to enforce that the column is an integer
+  if (typeof(column) != "numeric") {
+    cat("msFeatureCmp::sortMatrixByColumn must take a numeric column number\n")
+  }
+  key <- cat("V", column)
+  sortedMatrix <- matrix[order(matrix[ , key, descending]), ]
+  return(sortedMatrix)
+}
+
+findFirstFeature <- function(sortedFeatureMatrix, key = RT_IDX, target = 0) {
+  firstIdx <- 1
+  lastIdx <- nrow(sortedFeatureMatrix)
+
+  # Continuously halve the search space
+  while (firstIdx < lastIdx) {
+    middleIdx <- trunc((firstIdx + lastIdx) / 2)
+    if (sortedFeatureMatrix[middleIdx, key] < target) {
+      # Repeat the search on the lower half of the matrix
+      firstIdx <- middleIdx + 1
+    }
+    else {
+      # Repeat the search on the upper half of the matrix
+      lastIdx <- middleIdx
+    }
+  }
+
+  resultIdx <- 0
+  if (firstIdx >= 0) {
+    # The target was found, so update the result's index
+    resultIdx <- firstIdx - 1
+  }
+  return(resultIdx)
+}
+
+findFirstFeatureByRT <- function(featureMatrix, target) {
+  sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, RT_IDX)
+  targetIdx <- findFirstFeature(sortedFeatureMatrix, RT_IDX, target)
+  return(sortedFeatureMatrix[targetIdx])
+}
+
+findFirstFeatureByMZ <- function(featureMatrix, target) {
+  sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, MZ_IDX)
+  targetIdx <- findFirstFeature(sortedFeatureMatrix, MZ_IDX, target)
+  return(sortedFeatureMatrix[targetIdx])
 }

@@ -2,20 +2,22 @@
 % Please edit documentation in R/utils.R
 \name{loadFeatureFile}
 \alias{loadFeatureFile}
-\title{Loads a mass spectrometry feature set into memory. The feature file must be
-featureXML format.}
+\title{Loads a mass spectrometry feature set (containing found features) into
+memory as a FeatureMap. The feature file must be in featureXML (OpenMS)
+format.}
 \usage{
 loadFeatureFile(filePath)
 }
 \arguments{
-\item{filePath}{The location of the featureXML file.}
+\item{filePath}{The location of the featureXML file, as a string.}
 }
 \value{
 The in-memory representation of the feature set, as a FeatureMap.
 }
 \description{
-Loads a mass spectrometry feature set into memory. The feature file must be
-featureXML format.
+Loads a mass spectrometry feature set (containing found features) into
+memory as a FeatureMap. The feature file must be in featureXML (OpenMS)
+format.
 }
 \examples{
 \dontrun{

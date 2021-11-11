@@ -2,20 +2,20 @@
 % Please edit documentation in R/utils.R
 \name{loadMSFile}
 \alias{loadMSFile}
-\title{Loads a raw mass spectrometry run into memory. The MS file must be mzML
-format.}
+\title{Loads a raw mass spectrometry run into memory as an MSExperiment object. The
+input MS file must be in mzML (OpenMS) format.}
 \usage{
 loadMSFile(filePath)
 }
 \arguments{
-\item{filePath}{The location of the mzML file.}
+\item{filePath}{The location of the mzML file, as a string.}
 }
 \value{
 The in-memory representation of the MS run, as an MSExperiment.
 }
 \description{
-Loads a raw mass spectrometry run into memory. The MS file must be mzML
-format.
+Loads a raw mass spectrometry run into memory as an MSExperiment object. The
+input MS file must be in mzML (OpenMS) format.
 }
 \examples{
 \dontrun{
