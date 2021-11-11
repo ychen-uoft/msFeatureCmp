@@ -1,4 +1,4 @@
-# This file contains the primary points of access for the msFeatureCmp package.
+# This file contains the public APIs for the msFeatureCmp package.
 
 # The global pyOpenMS python import
 ropenms <- reticulate::import("pyopenms", convert = FALSE)
@@ -28,7 +28,7 @@ IT_IDX <- 3  # Signal intensity index
 #' @export
 compareFeatures <- function(featureFilePath1, featureFilePath2,
                             rawDataFilePath) {
-  # Load the raw MS run first, followed by both feature sets
+  # Load the raw MS data first, followed by both feature sets
   experiment <- ropenms$MSExperiment()
   ropenms$MzMLFile()$load(rawDataFilePath, experiment)
   featureSetA <- ropenms$FeatureMap()
@@ -37,4 +37,4 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
   ropenms$FeatureXMLFile()$load(featureFilePath2, featureSetB)
 }
 
-# TODO: add functions to access the plotting APIs
+# TODO: add more functions for comparisons and plotting

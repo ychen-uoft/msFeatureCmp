@@ -3,8 +3,8 @@
 \name{loadFeatureFile}
 \alias{loadFeatureFile}
 \title{Loads a mass spectrometry feature set (containing found features) into
-memory as a FeatureMap. The feature file must be in featureXML (OpenMS)
-format.}
+memory as a FeatureMap object. The feature file must be in featureXML
+(OpenMS) format.}
 \usage{
 loadFeatureFile(filePath)
 }
@@ -16,11 +16,12 @@ The in-memory representation of the feature set, as a FeatureMap.
 }
 \description{
 Loads a mass spectrometry feature set (containing found features) into
-memory as a FeatureMap. The feature file must be in featureXML (OpenMS)
-format.
+memory as a FeatureMap object. The feature file must be in featureXML
+(OpenMS) format.
 }
 \examples{
 \dontrun{
 featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
+featureSet$size()  # TODO: what should this return?
 }
 }

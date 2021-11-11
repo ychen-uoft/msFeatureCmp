@@ -7,25 +7,21 @@
 similarFeatures(feature1, feature2, rtThreshold = 5, mzThreshold = 0.01)
 }
 \arguments{
-\item{feature1}{The first feature to compare, as a Feature.}
+\item{feature1}{The first Feature to compare.}
 
-\item{feature2}{The second feature to compare, as a Feature.}
+\item{feature2}{The second Feature to compare.}
 
-\item{rtThreshold}{The retention time threshold to use, as a float.}
+\item{rtThreshold}{The RT threshold to use, as a number.}
 
-\item{mzThreshold}{The mass-to-charge threshold to use, as a float.}
+\item{mzThreshold}{The m/z threshold to use, as a number.}
 }
 \value{
 TRUE if the two features are similar; FALSE otherwise.
 }
 \description{
-We consider features to be similar if their retention times and mass-to
+We consider features to be similar if their retention times and mass-to-
 charge values are within some fixed thresholds of each other (which can be
 provided by the user).
-}
-\details{
-The default thresholds have been experimentally determined to provide the
-"best" results.
 }
 \examples{
 \dontrun{

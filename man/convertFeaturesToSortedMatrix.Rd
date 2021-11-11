@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{convertFeaturesToSortedMatrix}
 \alias{convertFeaturesToSortedMatrix}
-\title{Converts a set of features, as a FeatureMap, into a matrix of features.}
+\title{Converts a loaded set of features into a matrix of features.}
 \usage{
 convertFeaturesToSortedMatrix(featureSet)
 }
@@ -10,12 +10,12 @@ convertFeaturesToSortedMatrix(featureSet)
 \item{featureSet}{The set of features to convert, as a FeatureMap.}
 }
 \value{
-The corresponding sorted matrix for the features.
+The corresponding sorted matrix for the feature set.
 }
 \description{
 Each row of the matrix represents a feature, and contains its retention
-time, mass-to-charge, and signal intensity values, in that order. The
-resulting matrix will be also sorted by descending signal intensity.
+time, mass-to-charge, and signal intensity values, in that order. The matrix
+will be also sorted by descending signal intensity.
 }
 \examples{
 \dontrun{

@@ -2,24 +2,23 @@
 % Please edit documentation in R/utils.R
 \name{findFirstFeatureByMZ}
 \alias{findFirstFeatureByMZ}
-\title{Finds the first feature in a feature matrix that has its mass-to-charge equal
-to a given target. If no such feature exists, counts how many features have
-mass-to-charge values less than the target (the matrix rank).}
+\title{Finds the first feature in a feature matrix that has its mass-to-charge
+equal to a given target.}
 \usage{
 findFirstFeatureByMZ(featureMatrix, target)
 }
 \arguments{
 \item{featureMatrix}{The feature matrix to search.}
 
-\item{target}{The target mass-to-charge value, as a number.}
+\item{target}{The target m/z value, as a number.}
 }
 \value{
-The index of the first feature that has its mass-to-charge equal to
-the given target, if it exists, and the rank of the matrix otherwise.
+The first feature with the given m/z, if it exists; NULL otherwise.
 }
 \description{
 This function searches the feature matrix by sorting it first, and then
-applying binary search.
+applying binary search. If no feature with the specified m/z is found, then
+NULL is returned.
 }
 \examples{
 \dontrun{

@@ -2,9 +2,8 @@
 % Please edit documentation in R/utils.R
 \name{findFirstFeatureByRT}
 \alias{findFirstFeatureByRT}
-\title{Finds the first feature in a feature matrix that has its retention time equal
-to a given target. If no such feature exists, counts how many features have
-retention time less than the target (the matrix rank).}
+\title{Finds the first feature in a feature matrix that has its retention time
+equal to a given target.}
 \usage{
 findFirstFeatureByRT(featureMatrix, target)
 }
@@ -14,12 +13,12 @@ findFirstFeatureByRT(featureMatrix, target)
 \item{target}{The target retention time, as a number.}
 }
 \value{
-The index of the first feature that has its retention time equal to
-the given target, if it exists, and the rank of the matrix otherwise.
+The first feature with the given RT, if it exists; NULL otherwise.
 }
 \description{
 This function searches the feature matrix by sorting it first, and then
-applying binary search.
+applying binary search. If no feature with the specified RT is found, then
+NULL is returned.
 }
 \examples{
 \dontrun{
