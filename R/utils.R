@@ -37,6 +37,29 @@ loadFeatureFile <- function(filePath) {
   return(featureSet)
 }
 
+#' Checks if two values are within a certain distance of each other.
+#'
+#' @param value1 The first value, as a number.
+#' @param value2 The second value, as a number.
+#' @param threshold The maximum distance between the values, as a number.
+#'
+#' @return TRUE if the values are within the distance; FALSE otherwise.
+#'
+#' @examples
+#' \dontrun{
+#' x1 <- 5.1
+#' x2 <- 5.05
+#' maxDist <- 0.049
+#' withinThreshold(x1, x2, maxDist)  # Returns FALSE
+#' }
+withinThreshold <- function(value1, value2, threshold) {
+  isWithinThreshold <- FALSE
+  if (abs(value1 - value2) <= threshold) {
+    isWithinThreshold <- TRUE
+  }
+  return(isWithinThreshold)
+}
+
 #' Compares two features to determine if they are similar.
 #'
 #' We consider features to be similar if their retention times and mass-to-
@@ -60,11 +83,18 @@ loadFeatureFile <- function(filePath) {
 #' featureB$setMZ(300.005)
 #' similarFeatures(featureA, featureB)  # Returns TRUE
 #' }
-similarFeatures <- function(feature1, feature2, rtThreshold = 5,
-                            mzThreshold = 0.01) {
+similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
+                            mzThreshold = MZ_THRESHOLD) {
   isSimilar <- FALSE
-  if (abs(feature1$getRT() - feature2$getRT()) <= rtThreshold &
-      abs(feature1$getMZ() - feature2$getMZ()) <= mzThreshold) {
+  # "Overloading" - if the features are rows in a feature matrix
+  if (class(feature1) == "integer" & class(feature2) == "integer" &
+      withinThreshold(feature1[RT_IDX], feature2[RT_IDX], rtThreshold) &
+      withinThreshold(feature1[MZ_IDX], feature2[MZ_IDX], mzThreshold)) {
+    isSimilar <- TRUE
+  }
+  # If the features are Features in a feature set
+  else if (withinThreshold(feature1$getRT(), feature2$getRT(), rtThreshold) &
+           withinThreshold(feature1$getMZ(), feature2$getMZ(), mzThreshold)) {
     isSimilar <- TRUE
   }
   return(isSimilar)
@@ -112,7 +142,7 @@ sortMatrixByColumn <- function(matrix, column = 1, descending = FALSE) {
 #' \dontrun{
 #' featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
 #' featureMatrix <- convertFeaturesToSortedMatrix(featureSet)
-#' featureMatrix[1]  # TODO: what does this return?
+#' featureMatrix[1,]  # TODO: what does this return?
 #' }
 convertFeaturesToSortedMatrix <- function(featureSet) {
   # Start with an empty matrix of the correct size, and fill it one feature
@@ -128,7 +158,7 @@ convertFeaturesToSortedMatrix <- function(featureSet) {
   }
 
   # Sort by the third column (signal intensity), descending
-  sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, IT_IDX, TRUE)
+  sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, RT_IDX, FALSE)
   return(sortedFeatureMatrix)
 }
 
@@ -177,65 +207,4 @@ findFirstFeature <- function(sortedFeatureMatrix, key = RT_IDX, target = 0) {
     resultIdx <- firstIdx - 1
   }
   return(resultIdx)
-}
-
-#' Finds the first feature in a feature matrix that has its retention time
-#' equal to a given target.
-#'
-#' This function searches the feature matrix by sorting it first, and then
-#' applying binary search. If no feature with the specified RT is found, then
-#' NULL is returned.
-#'
-#' @param featureMatrix The feature matrix to search.
-#' @param target The target retention time, as a number.
-#'
-#' @return The first feature with the given RT, if it exists; NULL otherwise.
-#'
-#' @examples
-#' \dontrun{
-#' features <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
-#' featureMatrix <- convertFeaturesToSortedMatrix(features)
-#' rank <- findFirstFeatureByRT(featureMatrix, 810)
-#' rank  # TODO: what does this return?
-#' }
-findFirstFeatureByRT <- function(featureMatrix, target) {
-  sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, RT_IDX)
-  targetIdx <- findFirstFeature(sortedFeatureMatrix, RT_IDX, target)
-
-  # In this function, we don't care about rank, only the found feature
-  resultFeature <- NULL
-  if (targetIdx >= 1) {
-    resultFeature <- sortedFeatureMatrix[targetIdx]
-  }
-  return(resultFeature)
-}
-
-#' Finds the first feature in a feature matrix that has its mass-to-charge
-#' equal to a given target.
-#'
-#' This function searches the feature matrix by sorting it first, and then
-#' applying binary search. If no feature with the specified m/z is found, then
-#' NULL is returned.
-#'
-#' @param featureMatrix The feature matrix to search.
-#' @param target The target m/z value, as a number.
-#'
-#' @return The first feature with the given m/z, if it exists; NULL otherwise.
-#'
-#' @examples
-#' \dontrun{
-#' features <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
-#' featureMatrix <- convertFeaturesToSortedMatrix(features)
-#' rank <- findFirstFeatureByMZ(featureMatrix, 300)
-#' rank  # TODO: what does this return?
-#' }
-findFirstFeatureByMZ <- function(featureMatrix, target) {
-  sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, MZ_IDX)
-  targetIdx <- findFirstFeature(sortedFeatureMatrix, MZ_IDX, target)
-
-  resultFeature <- NULL
-  if (targetIdx >= 1) {
-    resultFeature <- sortedFeatureMatrix[targetIdx]
-  }
-  return(resultFeature)
 }

@@ -4,7 +4,12 @@
 \alias{similarFeatures}
 \title{Compares two features to determine if they are similar.}
 \usage{
-similarFeatures(feature1, feature2, rtThreshold = 5, mzThreshold = 0.01)
+similarFeatures(
+  feature1,
+  feature2,
+  rtThreshold = RT_THRESHOLD,
+  mzThreshold = MZ_THRESHOLD
+)
 }
 \arguments{
 \item{feature1}{The first Feature to compare.}

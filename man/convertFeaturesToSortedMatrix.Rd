@@ -21,6 +21,6 @@ will be also sorted by descending signal intensity.
 \dontrun{
 featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
 featureMatrix <- convertFeaturesToSortedMatrix(featureSet)
-featureMatrix[1]  # TODO: what does this return?
+featureMatrix[1,]  # TODO: what does this return?
 }
 }
