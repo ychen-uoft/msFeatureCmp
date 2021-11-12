@@ -3,23 +3,28 @@
 \name{compareFeatures}
 \alias{compareFeatures}
 \title{Compares two sets of mass spectrometry features corresponding to a single MS
-run. For example, to compare the results of different feature finding
-algorithms run on the same raw dataset.}
+run.}
 \usage{
 compareFeatures(featureFilePath1, featureFilePath2, rawDataFilePath)
 }
 \arguments{
-\item{featureFilePath1}{The location of the first featureXML file, as a string.}
+\item{featureFilePath1}{The location of the first featureXML file, as a
+string.}
 
-\item{featureFilePath2}{The location of the second featureXML file, as a string.}
+\item{featureFilePath2}{The location of the second featureXML file, as a
+string.}
 
 \item{rawDataFilePath}{The location of the mzML file, as a string.}
 }
 \description{
-TODO: it should print a comparison, including statistical scores. What else?
+This can be used to compare the results of different feature finding
+algorithms that have been run on the same raw dataset.
+}
+\details{
+TODO: what does this function do?
 }
 \examples{
-\dontrun{
+\dontrun{  # TODO: should this example be run?
 compareFeatures("inst/extdata/featureSetA.featureXML",
                 "inst/extdata/featureSetB.featureXML",
                 "inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-860.mzML")

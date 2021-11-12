@@ -18,7 +18,7 @@ findFirstFeature(sortedFeatureMatrix, key = RT_IDX, target = 0)
 }
 \value{
 The index of the first feature that has its element at the given key
-equal to the given target, if it exists; the rank of the matrix otherwise.
+equal to the given target, if it exists; the feature's rank otherwise.
 }
 \description{
 This function uses binary search to find the feature, so the feature matrix
@@ -30,6 +30,6 @@ m <- matrix(1:10, nrow = 5, ncol = 2)
 m[2, 1] <- 3
 m[4, 1] <- 3
 rank <- findFirstFeature(m, key = 1, target = 3)
-rank  # Should be 2
+rank  # Returns 2
 }
 }

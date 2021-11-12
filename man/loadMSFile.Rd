@@ -20,6 +20,6 @@ input MS file must be in mzML (OpenMS) format.
 \examples{
 \dontrun{
 experiment <- loadMSFile("inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-860.mzML")
-experiment$getNrSpectra()  # TODO: what should this return?
+experiment$getNrSpectra()  # Returns 47
 }
 }

@@ -15,12 +15,12 @@ The corresponding sorted matrix for the feature set.
 \description{
 Each row of the matrix represents a feature, and contains its retention
 time, mass-to-charge, and signal intensity values, in that order. The matrix
-will be also sorted by descending signal intensity.
+will be also sorted by ascending RT.
 }
 \examples{
 \dontrun{
 featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
 featureMatrix <- convertFeaturesToSortedMatrix(featureSet)
-featureMatrix[1,]  # TODO: what does this return?
+featureMatrix[1, ]  # Returns [802.979781716543, 861.395085396801, 280332.0]
 }
 }

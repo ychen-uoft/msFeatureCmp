@@ -23,7 +23,7 @@ Checks if two values are within a certain distance of each other.
 \dontrun{
 x1 <- 5.1
 x2 <- 5.05
-maxDist <- 0.049
+maxDist <- 0.01
 withinThreshold(x1, x2, maxDist)  # Returns FALSE
 }
 }

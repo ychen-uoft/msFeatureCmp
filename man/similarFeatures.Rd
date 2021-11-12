@@ -12,9 +12,9 @@ similarFeatures(
 )
 }
 \arguments{
-\item{feature1}{The first Feature to compare.}
+\item{feature1}{The first feature to compare.}
 
-\item{feature2}{The second Feature to compare.}
+\item{feature2}{The second feature to compare.}
 
 \item{rtThreshold}{The RT threshold to use, as a number.}
 
@@ -27,6 +27,10 @@ TRUE if the two features are similar; FALSE otherwise.
 We consider features to be similar if their retention times and mass-to-
 charge values are within some fixed thresholds of each other (which can be
 provided by the user).
+}
+\details{
+The provided features can be ropenms Feature objects or vectors (e.g. from
+a feature matrix).
 }
 \examples{
 \dontrun{

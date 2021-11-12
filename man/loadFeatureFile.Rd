@@ -22,6 +22,6 @@ memory as a FeatureMap object. The feature file must be in featureXML
 \examples{
 \dontrun{
 featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
-featureSet$size()  # TODO: what should this return?
+featureSet$size()  # Returns 3770
 }
 }

@@ -1,4 +1,6 @@
 # This file contains the private helper functions for the msFeatureCmp package.
+# Examples in this file cannot be run by roxygen because all the functions are
+# private.
 
 #' Loads a raw mass spectrometry run into memory as an MSExperiment object. The
 #' input MS file must be in mzML (OpenMS) format.
@@ -10,7 +12,7 @@
 #' @examples
 #' \dontrun{
 #' experiment <- loadMSFile("inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-860.mzML")
-#' experiment$getNrSpectra()  # TODO: what should this return?
+#' experiment$getNrSpectra()  # Returns 47
 #' }
 loadMSFile <- function(filePath) {
   experiment <- ropenms$MSExperiment()
@@ -29,7 +31,7 @@ loadMSFile <- function(filePath) {
 #' @examples
 #' \dontrun{
 #' featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
-#' featureSet$size()  # TODO: what should this return?
+#' featureSet$size()  # Returns 3770
 #' }
 loadFeatureFile <- function(filePath) {
   featureSet <- ropenms$FeatureMap()
@@ -49,7 +51,7 @@ loadFeatureFile <- function(filePath) {
 #' \dontrun{
 #' x1 <- 5.1
 #' x2 <- 5.05
-#' maxDist <- 0.049
+#' maxDist <- 0.01
 #' withinThreshold(x1, x2, maxDist)  # Returns FALSE
 #' }
 withinThreshold <- function(value1, value2, threshold) {
@@ -66,8 +68,11 @@ withinThreshold <- function(value1, value2, threshold) {
 #' charge values are within some fixed thresholds of each other (which can be
 #' provided by the user).
 #'
-#' @param feature1 The first Feature to compare.
-#' @param feature2 The second Feature to compare.
+#' The provided features can be ropenms Feature objects or vectors (e.g. from
+#' a feature matrix).
+#'
+#' @param feature1 The first feature to compare.
+#' @param feature2 The second feature to compare.
 #' @param rtThreshold The RT threshold to use, as a number.
 #' @param mzThreshold The m/z threshold to use, as a number.
 #'
@@ -86,7 +91,7 @@ withinThreshold <- function(value1, value2, threshold) {
 similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
                             mzThreshold = MZ_THRESHOLD) {
   isSimilar <- FALSE
-  # "Overloading" - if the features are rows in a feature matrix
+  # "Function overloading" - if the features are rows in a feature matrix
   if (class(feature1) == "integer" & class(feature2) == "integer" &
       withinThreshold(feature1[RT_IDX], feature2[RT_IDX], rtThreshold) &
       withinThreshold(feature1[MZ_IDX], feature2[MZ_IDX], mzThreshold)) {
@@ -97,6 +102,7 @@ similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
            withinThreshold(feature1$getMZ(), feature2$getMZ(), mzThreshold)) {
     isSimilar <- TRUE
   }
+  # TODO: maybe need to enforce a type check?
   return(isSimilar)
 }
 
@@ -121,7 +127,7 @@ similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
 sortMatrixByColumn <- function(matrix, column = 1, descending = FALSE) {
   # Need to enforce that the column is an integer
   if (typeof(column) != "integer") {
-    cat("msFeatureCmp::sortMatrixByColumn must take an integral column\n")
+    cat("msFeatureCmp::sortMatrixByColumn must take an int as column number\n")
   }
   key <- cat("V", column)
   sortedMatrix <- matrix[order(matrix[ , key, descending]), ]
@@ -132,7 +138,7 @@ sortMatrixByColumn <- function(matrix, column = 1, descending = FALSE) {
 #'
 #' Each row of the matrix represents a feature, and contains its retention
 #' time, mass-to-charge, and signal intensity values, in that order. The matrix
-#' will be also sorted by descending signal intensity.
+#' will be also sorted by ascending RT.
 #'
 #' @param featureSet The set of features to convert, as a FeatureMap.
 #'
@@ -142,11 +148,11 @@ sortMatrixByColumn <- function(matrix, column = 1, descending = FALSE) {
 #' \dontrun{
 #' featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
 #' featureMatrix <- convertFeaturesToSortedMatrix(featureSet)
-#' featureMatrix[1,]  # TODO: what does this return?
+#' featureMatrix[1, ]  # Returns [802.979781716543, 861.395085396801, 280332.0]
 #' }
 convertFeaturesToSortedMatrix <- function(featureSet) {
   # Start with an empty matrix of the correct size, and fill it one feature
-  # at a time.
+  # at a time
   featureMatrix <- matrix(nrow = featureSet$size(), ncol = 3)
   rowNum <- 1
   for (feature in featureSet) {
@@ -157,7 +163,7 @@ convertFeaturesToSortedMatrix <- function(featureSet) {
     rowNum <- rowNum + 1
   }
 
-  # Sort by the third column (signal intensity), descending
+  # Sort by the first column (RT), ascending
   sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, RT_IDX, FALSE)
   return(sortedFeatureMatrix)
 }
@@ -175,7 +181,7 @@ convertFeaturesToSortedMatrix <- function(featureSet) {
 #' @param target The target value to search for, as a number.
 #'
 #' @return The index of the first feature that has its element at the given key
-#' equal to the given target, if it exists; the rank of the matrix otherwise.
+#' equal to the given target, if it exists; the feature's rank otherwise.
 #'
 #' @examples
 #' \dontrun{
@@ -183,7 +189,7 @@ convertFeaturesToSortedMatrix <- function(featureSet) {
 #' m[2, 1] <- 3
 #' m[4, 1] <- 3
 #' rank <- findFirstFeature(m, key = 1, target = 3)
-#' rank  # Should be 2
+#' rank  # Returns 2
 #' }
 findFirstFeature <- function(sortedFeatureMatrix, key = RT_IDX, target = 0) {
   firstIdx <- 1
@@ -193,15 +199,16 @@ findFirstFeature <- function(sortedFeatureMatrix, key = RT_IDX, target = 0) {
   while (firstIdx < lastIdx) {
     middleIdx <- trunc((firstIdx + lastIdx) / 2)
     if (sortedFeatureMatrix[middleIdx, key] < target) {
-      # Repeat the search on the lower half of the matrix
+      # Repeat the search on the "lower" half of the matrix
       firstIdx <- middleIdx + 1
     }
     else {
-      # Repeat the search on the upper half of the matrix
+      # Repeat the search on the "upper" half of the matrix
       lastIdx <- middleIdx
     }
   }
 
+  # Error checking is left to the caller
   resultIdx <- 0
   if (firstIdx > 1) {
     resultIdx <- firstIdx - 1
