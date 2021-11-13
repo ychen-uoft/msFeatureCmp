@@ -4,8 +4,8 @@ Title: Mass Spectrometry Feature Comparator
 Version: 0.1.0
 Author: person("Yijia", "Chen", email="jyc.chen@mail.utoronto.ca", role=c("aut", "cre"))
 Maintainer: Yijia Chen <jyc.chen@mail.utoronto.ca>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Compares sets of mass spectrometry features (peptide signals), and
+    performs basic statistical analysis and visualization.
 License: GPL (>= 3) + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -14,3 +14,10 @@ Imports:
     reticulate
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
+SystemRequirements: Python (3.5-3.7) with pyOpenMS (>= 2.4.0)
+Suggests: 
+    rmarkdown,
+    knitr,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr

@@ -1,0 +1,13 @@
+citHeader("To cite msFeatureCmp in publications use:")
+
+citEntry(
+  entry    = "Unpublished",
+  title    = "msFeatureCmp",
+  author   = "Yijia Chen",
+  note     = "Unpublished",
+  year     = "2021",
+  url      = "https://github.com/ychen-uoft/msFeatureCmp",
+  textVersion = paste(
+    "Chen, Y. (2021). msFeatureCmp. https://github.com/ychen-uoft/msFeatureCmp"
+  )
+)

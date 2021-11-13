@@ -92,7 +92,7 @@ similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
                             mzThreshold = MZ_THRESHOLD) {
   isSimilar <- FALSE
   # "Function overloading" - if the features are rows in a feature matrix
-  if (class(feature1) == "integer" & class(feature2) == "integer" &
+  if (is.vector(feature1) & is.vector(feature2) &
       withinThreshold(feature1[RT_IDX], feature2[RT_IDX], rtThreshold) &
       withinThreshold(feature1[MZ_IDX], feature2[MZ_IDX], mzThreshold)) {
     isSimilar <- TRUE
@@ -129,7 +129,7 @@ sortMatrixByColumn <- function(matrix, column = 1, descending = FALSE) {
   if (typeof(column) != "integer") {
     cat("msFeatureCmp::sortMatrixByColumn must take an int as column number\n")
   }
-  key <- cat("V", column)
+  key <- paste("V", column, sep = "")
   sortedMatrix <- matrix[order(matrix[ , key, descending]), ]
   return(sortedMatrix)
 }
