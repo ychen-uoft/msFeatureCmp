@@ -39,11 +39,10 @@ MZ_THRESHOLD <- 0.01
 #' @export
 compareFeatures <- function(featureFilePath1, featureFilePath2,
                             rawDataFilePath) {
-  # TODO: remove rawDataFilePath, unless there's some analysis that needs it
-  # experiment <- ropenms$MSExperiment()
-  # ropenms$MzMLFile()$load(rawDataFilePath, experiment)
+  # Load the raw data and both feature sets
+  experiment <- ropenms$MSExperiment()
+  ropenms$MzMLFile()$load(rawDataFilePath, experiment)
 
-  # Load both feature sets from their files
   featureSetA <- ropenms$FeatureMap()
   ropenms$FeatureXMLFile()$load(featureFilePath1, featureSetA)
   featureSetB <- ropenms$FeatureMap()
@@ -54,8 +53,9 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
   featureMatrixB <- convertFeaturesToSortedMatrix(featureSetB)
 
   # Variables for statistical analysis
-  numCommonFeatures <- 0  # A AND B size
-  numUnmatchedFeatures <- 0  # A NAND B size
+  numCommonFeatures <- 0  # In A and B
+  numUnmatchedFeaturesA <- 0  # In A but not in B
+  numUnmatchedFeaturesB <- 0  # In B but not in A
   numSinglyMatchedFeatures <- 0  # One-to-one matches
   numMultiplyMatchedFeaturesAB <- 0  # One-to-many matches (from A to B)
   numMultiplyMatchedFeaturesBA <- 0  # One-to-many matches (from B to A)
@@ -88,7 +88,7 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
 
     # featureA was not similar to any feature in the second set
     if (numSimilarFeatures == 0) {
-      numUnmatchedFeatures <- numUnmatchedFeatures + 1
+      numUnmatchedFeaturesA <- numUnmatchedFeaturesA + 1
     }
     # featureA was similar to a single feature in the second set
     else if (numSimilarFeatures == 1) {
@@ -127,14 +127,150 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
 
     # No adding to numCommonFeatures; no else statement to avoid overcounting
     if (numSimilarFeatures == 0) {
-      numUnmatchedFeatures <- numUnmatchedFeatures + 1
+      numUnmatchedFeaturesB <- numUnmatchedFeaturesB + 1
     }
     else if (numSimilarFeatures > 1) {
       numMultiplyMatchedFeaturesBA <- numMultiplyMatchedFeaturesBA
     }
   }
 
-  # Numbers have been collected; now do analysis with them
+  # 2 - Number crunching
+  cat("\nmsFeatureCmp results\n")
+  cat("Raw data file :", rawDataFilePath, "\n")
+  cat("Feature file 1:", featureFilePath1, "\n")
+  cat("Feature file 2:", featureFilePath2, "\n\n")
+
+  numSpectra <- experiment$getNrSpectra()
+  numPeaks <- 0
+
+  for (i in 0:(numSpectra - 1)) {
+    spectrum <- experiment$getSpectrum(i)
+    numPeaks <- numPeaks + spectrum$size()
+  }
+
+  cat("Number of spectra:", numSpectra, "\n")
+  cat("Number of peaks:  ", numPeaks, "\n")
+  cat("Features in set 1:", featureSetA$size(), "\n")
+  cat("Features in set 2:", featureSetB$size(), "\n\n")
+
+  # a) Direct comparison
+  totalNumFeatures <- featureSetA$size() + featureSetB$size()
+  totalUnmatchedFeatures <- numUnmatchedFeaturesA + numUnmatchedFeaturesB
+  numMultiplyMatchedFeatures <- (totalNumFeatures - numCommonFeatures -
+                                   totalUnmatchedFeatures)
+
+  percentCommon <- (numCommonFeatures / totalNumFeatures) * 100
+  percentUnmatched <- (totalUnmatchedFeatures / totalNumFeatures) * 100
+  percentSinglyMatched <- (numSinglyMatchedFeatures / totalNumFeatures) * 100
+  percentMultiplyMatched <- 100 - percentUnmatched - percentSinglyMatched
+
+  cat("Total features:            ", totalNumFeatures, "\n")
+  cat("Number of common features: ", numCommonFeatures, "\n")
+  cat("Percent common:             ", percentCommon, "%\n", sep = "")
+  cat("Number of zero matches:    ", totalUnmatchedFeatures, "\n")
+  cat("Percent unmatched:          ", percentUnmatched, "%\n\n", sep = "")
+  cat("Number of single matches:  ", numSinglyMatchedFeatures, "\n")
+  cat("Percent single:             ", percentSinglyMatched, "%\n", sep = "")
+  cat("Number of multiple matches:", numMultiplyMatchedFeatures, "\n")
+  cat("Percent multiple:           ", percentMultiplyMatched, "%\n\n",
+      sep = "")
+
+  # b) Use the first feature set as the ground truth
+  numCommonFeatures <- numSinglyMatchedFeatures + numMultiplyMatchedFeaturesBA
+  recall <- numCommonFeatures / featureSetA$size()
+  precision <- numCommonFeatures / featureSetB$size()
+  f1Score <- (2 * precision * recall) / (precision + recall)
+
+  percentUnmatched <- (numUnmatchedFeaturesA / featureSetA$size()) * 100
+  percentSinglyMatched <- (numSinglyMatchedFeatures / featureSetA$size()) * 100
+  percentMultiplyMatched <- (numMultiplyMatchedFeaturesAB /
+                               featureSetA$size()) * 100
+
+  # Prints some common statistics. Like a lambda function, only visible here.
+  #
+  # @param zeroMatches The number of unmatched features, as an integer
+  # @param multipleMatches The number of multiply matched features, as an
+  # integer
+  printSomeStats <- function(zeroMatches, multipleMatches) {
+    cat("Number of common features: ", numCommonFeatures, "\n")
+    cat("Recall:                    ", recall, "\n")
+    cat("Precision:                 ", precision, "\n")
+    cat("F_1 score:                 ", f1Score, "\n")
+    cat("Number of zero matches:    ", zeroMatches, "\n")
+    cat("Percent unmatched:          ", percentUnmatched, "%\n", sep = "")
+    cat("Number of single matches:  ", numSinglyMatchedFeatures, "\n")
+    cat("Percent single:             ", percentSinglyMatched, "%\n", sep = "")
+    cat("Number of multiple matches:", multipleMatches, "\n")
+    cat("Percent multiple:           ", percentMultiplyMatched, "%\n\n",
+        sep = "")
+  }
+
+  cat("Using set 1 as the ground truth\n")
+  printSomeStats(numUnmatchedFeaturesA, numMultiplyMatchedFeaturesAB)
+
+  # c) Use the second feature set as the ground truth
+  numCommonFeatures <- numSinglyMatchedFeatures + numMultiplyMatchedFeaturesAB
+  recall <- numCommonFeatures / featureSetB$size()
+  precision <- numCommonFeatures / featureSetA$size()
+  f1Score <- (2 * precision * recall) / (precision + recall)
+
+  percentUnmatched <- (numUnmatchedFeaturesB / featureSetB$size()) * 100
+  percentSinglyMatched <- (numSinglyMatchedFeatures / featureSetB$size()) * 100
+  percentMultiplyMatched <- (numMultiplyMatchedFeaturesBA /
+                               featureSetB$size()) * 100
+
+  cat("Using set 2 as the ground truth\n")
+  printSomeStats(numUnmatchedFeaturesB, numMultiplyMatchedFeaturesBA)
 }
 
 # TODO: add more functions for comparisons and plotting
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
