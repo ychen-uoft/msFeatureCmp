@@ -4,7 +4,7 @@
 \alias{sortMatrixByColumn}
 \title{Sorts a matrix by a given column number.}
 \usage{
-sortMatrixByColumn(matrix, column = 1, descending = FALSE)
+sortMatrixByColumn(matrix, column = 1L, descending = FALSE)
 }
 \arguments{
 \item{matrix}{The matrix to sort.}

@@ -15,6 +15,8 @@
 #' experiment$getNrSpectra()  # Returns 47
 #' }
 loadMSFile <- function(filePath) {
+  ropenms <- reticulate::import("pyopenms", convert = FALSE)
+
   experiment <- ropenms$MSExperiment()
   ropenms$MzMLFile()$load(filePath, experiment)
   return(experiment)
@@ -34,6 +36,8 @@ loadMSFile <- function(filePath) {
 #' featureSet$size()  # Returns 3770
 #' }
 loadFeatureFile <- function(filePath) {
+  ropenms <- reticulate::import("pyopenms", convert = FALSE)
+
   featureSet <- ropenms$FeatureMap()
   ropenms$FeatureXMLFile()$load(filePath, featureSet)
   return(featureSet)
@@ -90,19 +94,27 @@ withinThreshold <- function(value1, value2, threshold) {
 #' }
 similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
                             mzThreshold = MZ_THRESHOLD) {
+  ropenms <- reticulate::import("pyopenms", convert = FALSE)
+
   isSimilar <- FALSE
   # "Function overloading" - if the features are rows in a feature matrix
-  if (is.vector(feature1) & is.vector(feature2) &
-      withinThreshold(feature1[RT_IDX], feature2[RT_IDX], rtThreshold) &
-      withinThreshold(feature1[MZ_IDX], feature2[MZ_IDX], mzThreshold)) {
-    isSimilar <- TRUE
+  if (is.vector(feature1) & is.vector(feature2)) {
+    if (withinThreshold(feature1[RT_IDX], feature2[RT_IDX], rtThreshold) &
+        withinThreshold(feature1[MZ_IDX], feature2[MZ_IDX], mzThreshold)) {
+      isSimilar <- TRUE
+    }
   }
-  # If the features are Features in a feature set
-  else if (withinThreshold(feature1$getRT(), feature2$getRT(), rtThreshold) &
-           withinThreshold(feature1$getMZ(), feature2$getMZ(), mzThreshold)) {
-    isSimilar <- TRUE
+  # If the features are Features in a set
+  else {
+    rtA <- reticulate::py_to_r(feature1$getRT())
+    mzA <- reticulate::py_to_r(feature1$getMZ())
+    rtB <- reticulate::py_to_r(feature2$getRT())
+    mzB <- reticulate::py_to_r(feature2$getMZ())
+    if (withinThreshold(rtA, rtB, rtThreshold) &
+        withinThreshold(mzA, mzB, mzThreshold)) {
+      isSimilar <- TRUE
+    }
   }
-  # TODO: maybe need to enforce a type check?
   return(isSimilar)
 }
 
@@ -124,13 +136,13 @@ similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
 #' sortedMatrix <- sortMatrixByColumn(m, descending = TRUE)
 #' sortedMatrix
 #' }
-sortMatrixByColumn <- function(matrix, column = 1, descending = FALSE) {
+sortMatrixByColumn <- function(matrix, column = 1L, descending = FALSE) {
   # Need to enforce that the column is an integer
   if (typeof(column) != "integer") {
     cat("msFeatureCmp::sortMatrixByColumn must take an int as column number\n")
   }
-  key <- paste("V", column, sep = "")
-  sortedMatrix <- matrix[order(matrix[ , key, descending]), ]
+  # key <- paste("V", column, sep = "")
+  sortedMatrix <- matrix[order(matrix[, column], decreasing = descending), ]
   return(sortedMatrix)
 }
 
@@ -151,20 +163,23 @@ sortMatrixByColumn <- function(matrix, column = 1, descending = FALSE) {
 #' featureMatrix[1, ]  # Returns [802.979781716543, 861.395085396801, 280332.0]
 #' }
 convertFeaturesToSortedMatrix <- function(featureSet) {
+  ropenms <- reticulate::import("pyopenms", convert = FALSE)
+
   # Start with an empty matrix of the correct size, and fill it one feature
   # at a time
-  featureMatrix <- matrix(nrow = featureSet$size(), ncol = 3)
-  rowNum <- 1
-  for (feature in featureSet) {
-    # Global constants are defined in comparator.R
-    featureMatrix[rowNum, RT_IDX] <- feature$getRT()
-    featureMatrix[rowNum, MZ_IDX] <- feature$getMZ()
-    featureMatrix[rowNum, IT_IDX] <- feature$getIntensity()
-    rowNum <- rowNum + 1
+  numFeatures <- reticulate::py_to_r(featureSet$size())
+  featureMatrix <- matrix(nrow = numFeatures, ncol = 3)
+
+  for (i in seq(1, numFeatures)) {
+    featureMatrix[i, RT_IDX] <- reticulate::py_to_r(featureSet[i - 1]$getRT())
+    featureMatrix[i, MZ_IDX] <- reticulate::py_to_r(featureSet[i - 1]$getMZ())
+    featureMatrix[i, IT_IDX] <- reticulate::py_to_r(
+      featureSet[i - 1]$getIntensity())
   }
 
   # Sort by the first column (RT), ascending
-  sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, RT_IDX, FALSE)
+  sortedFeatureMatrix <- sortMatrixByColumn(featureMatrix, as.integer(RT_IDX),
+                                            FALSE)
   return(sortedFeatureMatrix)
 }
 
@@ -209,9 +224,9 @@ findFirstFeature <- function(sortedFeatureMatrix, key = RT_IDX, target = 0) {
   }
 
   # Error checking is left to the caller
-  resultIdx <- 0
-  if (firstIdx > 1) {
-    resultIdx <- firstIdx - 1
+  resultIdx <- firstIdx
+  if (sortedFeatureMatrix[resultIdx, key] > target) {
+    resultIdx <- 0
   }
   return(resultIdx)
 }

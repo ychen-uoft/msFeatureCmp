@@ -2,7 +2,7 @@
 
 # The global pyOpenMS Python import. This allows the package to interface with
 # the raw mass spectrometry data.
-ropenms <- reticulate::import("pyopenms", convert = FALSE)
+# ropenms <- reticulate::import("pyopenms", convert = FALSE)
 
 # Global constants for feature matrices
 RT_IDX <- 1  # Retention time index
@@ -39,6 +39,8 @@ MZ_THRESHOLD <- 0.01
 #' @export
 compareFeatures <- function(featureFilePath1, featureFilePath2,
                             rawDataFilePath) {
+  ropenms <- reticulate::import("pyopenms", convert = FALSE)
+
   # Load the raw data and both feature sets
   experiment <- ropenms$MSExperiment()
   ropenms$MzMLFile()$load(rawDataFilePath, experiment)
@@ -172,8 +174,8 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
   cat("Number of single matches:  ", numSinglyMatchedFeatures, "\n")
   cat("Percent single:             ", percentSinglyMatched, "%\n", sep = "")
   cat("Number of multiple matches:", numMultiplyMatchedFeatures, "\n")
-  cat("Percent multiple:           ", percentMultiplyMatched, "%\n\n",
-      sep = "")
+  cat("Percent multiple:           ",
+      percentMultiplyMatched, "%\n\n", sep = "")
 
   # b) Use the first feature set as the ground truth
   numCommonFeatures <- numSinglyMatchedFeatures + numMultiplyMatchedFeaturesBA
@@ -201,8 +203,8 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
     cat("Number of single matches:  ", numSinglyMatchedFeatures, "\n")
     cat("Percent single:             ", percentSinglyMatched, "%\n", sep = "")
     cat("Number of multiple matches:", multipleMatches, "\n")
-    cat("Percent multiple:           ", percentMultiplyMatched, "%\n\n",
-        sep = "")
+    cat("Percent multiple:           ",
+        percentMultiplyMatched, "%\n\n", sep = "")
   }
 
   cat("Using set 1 as the ground truth\n")
@@ -224,53 +226,3 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
 }
 
 # TODO: add more functions for comparisons and plotting
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
