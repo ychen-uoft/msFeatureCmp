@@ -21,6 +21,7 @@ will be also sorted by ascending RT.
 \dontrun{
 featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
 featureMatrix <- convertFeaturesToSortedMatrix(featureSet)
-featureMatrix[1, ]  # Returns [802.979781716543, 861.395085396801, 280332.0]
+featureMatrix[1, ]
+# Returns [800.002794376452, 614.596298389786, 10900.7001953125]
 }
 }

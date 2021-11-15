@@ -14,6 +14,51 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(msFeatureCmp)
+## Description
+
+The goal of msFeatureCmp is to provide a simple and fast way to evaluate the performance of different mass spectrometry feature finding algorithms, relative to one another. This package provides a way to compare features (peptide signals) found by different algorithms, perform some basic statistical analysis on the results, and visualize the different sets of features and their locations on the raw data. Existing MS tools (like OpenMS and MaxQuant) do not provide methods that allow for cross-tool comparisons--likely because they are competitors--so this package aims to make the process more accessible.
+
+msFeatureCmp 0.1.0 was developed with R 4.1.1 in addition to Python 3.7.9 and the Python package pyOpenMS 2.7.0 on Windows 10 19043.1348.
+
+## Installation
+
+Before you can use this package, you need to ensure that you have a version of Python from 3.5 to 3.7 installed, as well as the Python package `pyOpenMS` (at least version 2.4.0). Python installers can be downloaded from the Python downloads page [here](https://www.python.org/downloads/), and `pyOpenMS` can be installed from PyPI by running `pip install pyopenms` in a Python-enabled shell (e.g. bash, cmd, etc.).
+
+You can install the development version of msFeatureCmp from [GitHub](https://github.com/ychen-uoft/msFeatureCmp) with:
+
+``` r
+install.packages("devtools")
+devtools::install_github("ychen-uoft/msFeatureCmp", build_vignettes = TRUE)
+library("msFeatureCmp")
+```
+
+To run the Shiny app:
+``` r
+Under construction
+```
+
+If R has trouble finding the correct Python environment (and you have checked that all the Python prerequisites outlined above have been installed properly), then you can set it by hand with `Sys.setenv(RETICULATE_PYTHON = "<path to the correct Python binary>")` before installing the package.
+
+## Functions
+
+**compareFeatures(rawDataFilePath, featureFilePath1, featureFilePath2)**
+
+**getFeatureByIdx(featureFilePath, idx)**
+
+## References
+
+Chen, Y., Xu, L., & Röst, H. (2020). *Improving feature finding in LC-MS/MS runs by using additional ion mobility data*. [Unpublished BCB330Y1 final report]. Department of Cell & Systems Biology, University of Toronto, Toronto, Canada.
+
+Meier, F., Brunner, A.-D., Frank, M., Ha, A., Bludau, I., Voytik, E., Kaspar-Schoenefeld, S., Lubeck, M., Raether, O., Bache, N., Aebersold, R., Collins, B., Röst, H., & Mann, M. (2020). diaPASEF: parallel accumulation-serial fragmentation combined with data-independent acquisition. *Nat Methods, 17*, 1229-1236. https://doi.org/10.1038/s41592-020-00998-0
+
+Prianichnikov, N., Koch, H., Koch, S., Lubeck, M., Heilig, R., Brehmer, S., Fischer, R., & Cox, J. (2020). MaxQuant software for ion mobility enhanced shotgun proteomics. *Mol Cell Proteomics, 19*, 1058-1069. https://doi.org/10.1074/mcp.TIR119.001720
+
+Röst, H., Schmitt, U., Aebersold, R., & Malmström, M. (2014). pyOpenMS: a Python-based interface to the OpenMS mass-spectrometry algorithm library. *Proteomics, 14(1)*, 74-77. https://doi.org/10.1002/pmic.201300246
+
+Röst, H., Sachsenberg, T., Aiche, S., Bielow, C., Weisser, H., Aicheler, F., Andreotti, S., Ehrlich, H.-C., Gutenbrunner, P., Kenar, E., Liang, X., Nahnsen, S., Nilse, L., Pfeuffer, J., Rosenberger, G., Rurik, M., Schmitt, U., Veit, J., Walzer, M., ... Kohlbacher, O. (2016). OpenMS: a flexible open-source software platform for mass spectrometry data analysis. *Nat Methods, 13*, 741-748. https://doi.org/10.1038/nmeth.3959
+
+Ushey, K., Allaire, J., & Tang, Y. (2021). *reticulate: interface to 'Python'*. R package version 1.22. https://CRAN.R-project.org/package=reticulate
+
+``` {r}
+sessionInfo()
 ```

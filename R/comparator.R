@@ -23,32 +23,29 @@ MZ_THRESHOLD <- 0.01
 #'
 #' TODO: what does this function do?
 #'
+#' @param rawDataFilePath The location of the mzML file, as a string.
 #' @param featureFilePath1 The location of the first featureXML file, as a
 #' string.
 #' @param featureFilePath2 The location of the second featureXML file, as a
 #' string.
-#' @param rawDataFilePath The location of the mzML file, as a string.
 #'
 #' @examples
-#' \dontrun{  # TODO: should this example be run?
-#' compareFeatures("inst/extdata/featureSetA.featureXML",
-#'                 "inst/extdata/featureSetB.featureXML",
-#'                 "inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-860.mzML")
+#' \dontrun{
+#' compareFeatures("inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML",
+#'                 "inst/extdata/featureSetA.featureXML",
+#'                 "inst/extdata/featureSetB.featureXML")
 #' }
 #'
 #' @export
-compareFeatures <- function(featureFilePath1, featureFilePath2,
-                            rawDataFilePath) {
+compareFeatures <- function(rawDataFilePath, featureFilePath1,
+                            featureFilePath2) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
+  # browser()
 
   # Load the raw data and both feature sets
-  experiment <- ropenms$MSExperiment()
-  ropenms$MzMLFile()$load(rawDataFilePath, experiment)
-
-  featureSetA <- ropenms$FeatureMap()
-  ropenms$FeatureXMLFile()$load(featureFilePath1, featureSetA)
-  featureSetB <- ropenms$FeatureMap()
-  ropenms$FeatureXMLFile()$load(featureFilePath2, featureSetB)
+  experiment <- loadMSFile(rawDataFilePath)
+  featureSetA <- loadFeatureFile(featureFilePath1)
+  featureSetB <- loadFeatureFile(featureFilePath2)
 
   # Convert both feature sets to feature matrices for easier computation
   featureMatrixA <- convertFeaturesToSortedMatrix(featureSetA)
@@ -64,7 +61,7 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
 
   # 1 - Find the intersection of the two feature sets
   # a) Use the first feature set as the reference set
-  for (i in 1:featureSetA$size()) {
+  for (i in 1:reticulate::py_to_r(featureSetA$size())) {
     featureA <- featureMatrixA[i, ]  # A vector of [RT, m/z, intensity]
     similarIdx <- findFirstFeature(featureMatrixB,
                                    target = featureA[RT_IDX] - RT_THRESHOLD)
@@ -76,15 +73,21 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
     }
     featureB <- featureMatrixB[similarIdx, ]
 
-    while (withinThreshold(featureA[RT_IDX], featureB[RT_IDX], RT_THRESHOLD)) {
+    # Iterate through the features in the second set from the lower bound
+    while (TRUE) {
       if (similarFeatures(featureA, featureB)) {
         numSimilarFeatures <- numSimilarFeatures + 1
       }
 
-      # Advance to the next feature in the second set while still in range
       similarIdx <- similarIdx + 1
-      if (similarIdx > featureSetB$size()) {
+      if (similarIdx > reticulate::py_to_r(featureSetB$size())) {
+        # Reached the end of the second set
         break
+      }
+      featureB <- featureMatrixB[similarIdx, ]
+      if (featureB[RT_IDX] > featureA[RT_IDX] + RT_THRESHOLD) {
+        # Reached the end of the RT threshold window
+        break;
       }
     }
 
@@ -105,7 +108,7 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
   }
 
   # b) Use the second feature set as the reference set
-  for (i in 1:featureSetB$size()) {
+  for (i in 1:reticulate::py_to_r(featureSetB$size())) {
     featureB <- featureMatrixB[i, ]
     similarIdx <- findFirstFeature(featureMatrixA,
                                    target = featureB[RT_IDX] - RT_THRESHOLD)
@@ -116,13 +119,17 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
     }
     featureA <- featureMatrixA[similarIdx, ]
 
-    while (withinThreshold(featureB[RT_IDX], featureA[RT_IDX], RT_THRESHOLD)) {
+    while (TRUE) {
       if (similarFeatures(featureB, featureA)) {
         numSimilarFeatures <- numSimilarFeatures + 1
       }
 
       similarIdx <- similarIdx + 1
-      if (similarIdx > featureSetA$size()) {
+      if (similarIdx > reticulate::py_to_r(featureSetA$size())) {
+        break
+      }
+      featureA <- featureMatrixA[similarIdx, ]
+      if (featureA[RT_IDX] > featureB[RT_IDX] + RT_THRESHOLD) {
         break
       }
     }
@@ -142,35 +149,37 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
   cat("Feature file 1:", featureFilePath1, "\n")
   cat("Feature file 2:", featureFilePath2, "\n\n")
 
-  numSpectra <- experiment$getNrSpectra()
+  numSpectra <- reticulate::py_to_r(experiment$getNrSpectra())
   numPeaks <- 0
 
   for (i in 0:(numSpectra - 1)) {
     spectrum <- experiment$getSpectrum(i)
-    numPeaks <- numPeaks + spectrum$size()
+    numPeaks <- numPeaks + reticulate::py_to_r(spectrum$size())
   }
 
   cat("Number of spectra:", numSpectra, "\n")
   cat("Number of peaks:  ", numPeaks, "\n")
-  cat("Features in set 1:", featureSetA$size(), "\n")
-  cat("Features in set 2:", featureSetB$size(), "\n\n")
+  cat("Features in set 1:", reticulate::py_to_r(featureSetA$size()), "\n")
+  cat("Features in set 2:", reticulate::py_to_r(featureSetB$size()), "\n\n")
 
   # a) Direct comparison
-  totalNumFeatures <- featureSetA$size() + featureSetB$size()
+  totalNumFeatures <- reticulate::py_to_r(featureSetA$size()) +
+    reticulate::py_to_r(featureSetB$size())
   totalUnmatchedFeatures <- numUnmatchedFeaturesA + numUnmatchedFeaturesB
-  numMultiplyMatchedFeatures <- (totalNumFeatures - numCommonFeatures -
-                                   totalUnmatchedFeatures)
+  numMultiplyMatchedFeatures <- numMultiplyMatchedFeaturesAB +
+    numMultiplyMatchedFeaturesBA
 
   percentCommon <- (numCommonFeatures / totalNumFeatures) * 100
   percentUnmatched <- (totalUnmatchedFeatures / totalNumFeatures) * 100
   percentSinglyMatched <- (numSinglyMatchedFeatures / totalNumFeatures) * 100
-  percentMultiplyMatched <- 100 - percentUnmatched - percentSinglyMatched
+  percentMultiplyMatched <- (numMultiplyMatchedFeatures /
+                               totalNumFeatures) * 100
 
-  cat("Total features:            ", totalNumFeatures, "\n")
+  cat("Total features (both sets):", totalNumFeatures, "\n")
   cat("Number of common features: ", numCommonFeatures, "\n")
   cat("Percent common:             ", percentCommon, "%\n", sep = "")
   cat("Number of zero matches:    ", totalUnmatchedFeatures, "\n")
-  cat("Percent unmatched:          ", percentUnmatched, "%\n\n", sep = "")
+  cat("Percent unmatched:          ", percentUnmatched, "%\n", sep = "")
   cat("Number of single matches:  ", numSinglyMatchedFeatures, "\n")
   cat("Percent single:             ", percentSinglyMatched, "%\n", sep = "")
   cat("Number of multiple matches:", numMultiplyMatchedFeatures, "\n")
@@ -179,14 +188,16 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
 
   # b) Use the first feature set as the ground truth
   numCommonFeatures <- numSinglyMatchedFeatures + numMultiplyMatchedFeaturesBA
-  recall <- numCommonFeatures / featureSetA$size()
-  precision <- numCommonFeatures / featureSetB$size()
+  recall <- numCommonFeatures / reticulate::py_to_r(featureSetA$size())
+  precision <- numCommonFeatures / reticulate::py_to_r(featureSetB$size())
   f1Score <- (2 * precision * recall) / (precision + recall)
 
-  percentUnmatched <- (numUnmatchedFeaturesA / featureSetA$size()) * 100
-  percentSinglyMatched <- (numSinglyMatchedFeatures / featureSetA$size()) * 100
+  percentUnmatched <- (numUnmatchedFeaturesA /
+                         reticulate::py_to_r(featureSetA$size())) * 100
+  percentSinglyMatched <- (numSinglyMatchedFeatures /
+                             reticulate::py_to_r(featureSetA$size())) * 100
   percentMultiplyMatched <- (numMultiplyMatchedFeaturesAB /
-                               featureSetA$size()) * 100
+                               reticulate::py_to_r(featureSetA$size())) * 100
 
   # Prints some common statistics. Like a lambda function, only visible here.
   #
@@ -212,17 +223,52 @@ compareFeatures <- function(featureFilePath1, featureFilePath2,
 
   # c) Use the second feature set as the ground truth
   numCommonFeatures <- numSinglyMatchedFeatures + numMultiplyMatchedFeaturesAB
-  recall <- numCommonFeatures / featureSetB$size()
-  precision <- numCommonFeatures / featureSetA$size()
+  recall <- numCommonFeatures / reticulate::py_to_r(featureSetB$size())
+  precision <- numCommonFeatures / reticulate::py_to_r(featureSetA$size())
   f1Score <- (2 * precision * recall) / (precision + recall)
 
-  percentUnmatched <- (numUnmatchedFeaturesB / featureSetB$size()) * 100
-  percentSinglyMatched <- (numSinglyMatchedFeatures / featureSetB$size()) * 100
+  percentUnmatched <- (numUnmatchedFeaturesB /
+                         reticulate::py_to_r(featureSetB$size())) * 100
+  percentSinglyMatched <- (numSinglyMatchedFeatures /
+                             reticulate::py_to_r(featureSetB$size())) * 100
   percentMultiplyMatched <- (numMultiplyMatchedFeaturesBA /
-                               featureSetB$size()) * 100
+                               reticulate::py_to_r(featureSetB$size())) * 100
 
   cat("Using set 2 as the ground truth\n")
   printSomeStats(numUnmatchedFeaturesB, numMultiplyMatchedFeaturesBA)
+}
+
+#' Retrieves information about the feature at the given index in the given
+#' featureXML file.
+#'
+#' In particular, this function prints the feature's retention time, mass-to-
+#' charge, and signal intensity, if it exists, and throws an error otherwise.
+#'
+#' @param featureFilePath The location of the featureXML file, as a string.
+#' @param idx The index of the required feature in the set, as an integer.
+#'
+#' @examples
+#' \dontrun{
+#' getFeatureByIdx("inst/extdata/featureSetA.featureXML", 250)
+#' }
+#'
+#' @export
+getFeatureByIdx <- function(featureFilePath, idx) {
+  ropenms <- reticulate::import("pyopenms", convert = FALSE)
+
+  featureSet <- loadFeatureFile(featureFilePath)
+  featureSet$sortByRT()
+  if (idx < 1 | idx > reticulate::py_to_r(featureSet$size())) {
+    errMsg <- paste("Cannot get feature from", featureFilePath, "with index",
+                    idx, " (out of range)")
+    stop(errMsg)
+  }
+
+  feature <- featureSet[idx]
+  retInfo <- c(reticulate::py_to_r(feature$getRT()),
+               reticulate::py_to_r(feature$getMZ()),
+               reticulate::py_to_r(feature$getIntensity()))
+  return(retInfo)
 }
 
 # TODO: add more functions for comparisons and plotting

@@ -5,16 +5,16 @@
 \title{Compares two sets of mass spectrometry features corresponding to a single MS
 run.}
 \usage{
-compareFeatures(featureFilePath1, featureFilePath2, rawDataFilePath)
+compareFeatures(rawDataFilePath, featureFilePath1, featureFilePath2)
 }
 \arguments{
+\item{rawDataFilePath}{The location of the mzML file, as a string.}
+
 \item{featureFilePath1}{The location of the first featureXML file, as a
 string.}
 
 \item{featureFilePath2}{The location of the second featureXML file, as a
 string.}
-
-\item{rawDataFilePath}{The location of the mzML file, as a string.}
 }
 \description{
 This can be used to compare the results of different feature finding
@@ -24,10 +24,10 @@ algorithms that have been run on the same raw dataset.
 TODO: what does this function do?
 }
 \examples{
-\dontrun{  # TODO: should this example be run?
-compareFeatures("inst/extdata/featureSetA.featureXML",
-                "inst/extdata/featureSetB.featureXML",
-                "inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-860.mzML")
+\dontrun{
+compareFeatures("inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML",
+                "inst/extdata/featureSetA.featureXML",
+                "inst/extdata/featureSetB.featureXML")
 }
 
 }

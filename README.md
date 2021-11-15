@@ -46,10 +46,6 @@ To run the Shiny app:
 Under construction
 ```
 
-Raw data (used for examples) is located in the “inst/extdata” directory.
-The three files (one mzML and two featureXMLs) need to be unzipped
-before they can be used.
-
 If R has trouble finding the correct Python environment (and you have
 checked that all the Python prerequisites outlined above have been
 installed properly), then you can set it by hand with
@@ -64,7 +60,19 @@ ls("package:msFeatureCmp")
 
 -   Describe each of the public APIs here
 
-For more details, refer to the package vignettes.
+`msFeatureCmp` contains XYZ public functions for enabling feature
+comparisons, analysis, and visualization. The primary function is
+`compareFeatures`, which takes two feature sets and compares the
+features between them. This allows users to check things like which
+features in the first set also occur in the second, and how many
+features are in common. Depending on the size of the feature sets, this
+function may take a while to run!
+
+The function `getFeatureByIdx` is a simple interface into a featureXML
+file, and allows users to select a feature in the file (by its index) to
+get its retention time, mass-to-charge, and signal intensity values.
+
+For more details, refer to the package vignette.
 
 ``` r
 browseVignettes("msFeatureCmp")
@@ -95,8 +103,8 @@ implemented by hand).
 The example mzML file (raw MS data, in “inst/extdata”) was downloaded
 from EMBL-EBI’s PRIDE archive as a Bruker (MaxQuant) d file, converted
 to the open-source OpenMS mzML format using the Python package
-`diapysef`, and cut to an arbitrary 60-second slice (in this case,
-800s-860s) from the entire 2-hour run using OpenMS’s FileFilter tool.
+`diapysef`, and cut to an arbitrary 10-second slice (in this case,
+800s-810s) from the entire 2-hour run using OpenMS’s FileFilter tool.
 The example featureXML file (containing found features, in
 “inst/extdata”) “featureSetA” was obtained by running my own feature
 finding algorithm (developed for my BCB330 project with the Röst Lab at
@@ -147,27 +155,3 @@ Ushey, K., Allaire, J., & Tang, Y. (2021). *reticulate: interface to
 
 This package was developed as part of an assessment for 2021 BCB410H1:
 Applied Bioinformatics, University of Toronto, Toronto, CANADA.
-
-## Notes, to be removed before final check in
-
-``` r
-devtools::build_readme()
-```
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
--   Try msFeatureCmp:::function() if not exported
-
--   usethis::use\_test(“test-testName”)
-
--   devtools::test() to test
-
--   usethis::use\_vignette(“vignette\_name”)
-
--   stop()
-
--   warning()
-
--   message()
-
--   ggplot2

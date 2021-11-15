@@ -3,9 +3,9 @@
 test_that("loading raw data works", {
   # Load the example mzML file and count the number of spectra
   experiment <- msFeatureCmp:::loadMSFile(system.file("extdata",
-    "20190122_HeLa_QC_Slot1-47_1_3228_800-860.mzML", package = "msFeatureCmp"))
+    "20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML", package = "msFeatureCmp"))
   numSpectra <- reticulate::py_to_r(experiment$getNrSpectra())
-  expect_equal(numSpectra, 47)
+  expect_equal(numSpectra, 8)
 })
 
 test_that("loading feature data works", {
@@ -13,7 +13,7 @@ test_that("loading feature data works", {
   featureSet <- msFeatureCmp:::loadFeatureFile(
     system.file("extdata", "featureSetA.featureXML", package = "msFeatureCmp"))
   numFeatures <- reticulate::py_to_r(featureSet$size())
-  expect_equal(numFeatures, 3770)
+  expect_equal(numFeatures, 720)
 })
 
 test_that("threshold checking works", {
@@ -95,11 +95,11 @@ test_that("feature conversion works", {
 
   expect_equal(reticulate::py_to_r(featureSet$size()), nrow(featureMatrix))
   expect_equal(featureMatrix[1, ],
-               c(802.979781716543, 861.395085396801, 280332.0))
+               c(800.002794376452, 614.596298389786, 10900.7001953125))
   expect_equal(featureMatrix[2, ],
-               c(803.117204925118, 523.759038291013, 56662.6015625))
+               c(800.008514955597, 501.302382748776, 19653.0))
   expect_equal(featureMatrix[nrow(featureMatrix), ],
-               c(858.549127824986, 721.38802799126, 150236.0))
+               c(809.9793354586872, 564.20839028551, 5604.33984375))
 })
 
 test_that("binary search works", {

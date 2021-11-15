@@ -11,8 +11,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' experiment <- loadMSFile("inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-860.mzML")
-#' experiment$getNrSpectra()  # Returns 47
+#' experiment <- loadMSFile("inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML")
+#' experiment$getNrSpectra()  # Returns 8
 #' }
 loadMSFile <- function(filePath) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
@@ -33,7 +33,7 @@ loadMSFile <- function(filePath) {
 #' @examples
 #' \dontrun{
 #' featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
-#' featureSet$size()  # Returns 3770
+#' featureSet$size()  # Returns 720
 #' }
 loadFeatureFile <- function(filePath) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
@@ -160,7 +160,8 @@ sortMatrixByColumn <- function(matrix, column = 1L, descending = FALSE) {
 #' \dontrun{
 #' featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
 #' featureMatrix <- convertFeaturesToSortedMatrix(featureSet)
-#' featureMatrix[1, ]  # Returns [802.979781716543, 861.395085396801, 280332.0]
+#' featureMatrix[1, ]
+#' # Returns [800.002794376452, 614.596298389786, 10900.7001953125]
 #' }
 convertFeaturesToSortedMatrix <- function(featureSet) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
