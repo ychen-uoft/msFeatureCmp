@@ -35,7 +35,7 @@ You can install the development version of msFeatureCmp from
 [GitHub](https://github.com/ychen-uoft/msFeatureCmp) with:
 
 ``` r
-install.packages("devtools")
+require("devtools")
 devtools::install_github("ychen-uoft/msFeatureCmp", build_vignettes = TRUE)
 library("msFeatureCmp")
 ```
