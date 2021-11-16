@@ -2,8 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-inst/extdata/*.mzML
-inst/extdata/*.featureXML
 inst/doc
 /doc/
 /Meta/
