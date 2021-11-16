@@ -150,17 +150,12 @@ plotTwoFeatureSets <- function(featureFilePath1, featureFilePath2) {
   # First convert both feature sets into data frames
   featureDataFrameA <- generateFeatureDataFrame(featureFilePath1)
   # Add an additional column to distinguish between the two sets
-  typeColumn <- rep("A", nrow(featureDataFrameA))
-  cbind(featureDataFrameA, typeColumn)
-  # Make sure the column names are consistent
-  colnames(featureDataFrameA) <- c(c("RetentionTime", "MassToCharge",
-                                     "Intensity", "Type"))
+  Type <- rep("A", nrow(featureDataFrameA))
+  featureDataFrameA <- cbind(featureDataFrameA, Type)
 
   featureDataFrameB <- generateFeatureDataFrame(featureFilePath2)
-  typeColumn <- rep("B", nrow(featureDataFrameB))
-  cbind(featureDataFrameB, typeColumn)
-  colnames(featureDataFrameB) <- c(c("RetentionTime", "MassToCharge",
-                                     "Intensity", "Type"))
+  Type <- rep("B", nrow(featureDataFrameB))
+  featureDataFrameB <- cbind(featureDataFrameB, Type)
 
   # Add the second data frame to the first and plot the result
   featureDataFrame <- rbind(featureDataFrameA, featureDataFrameB)
@@ -193,16 +188,12 @@ plotFeatureSetOnRawData <- function(rawDataFilePath, featureFilePath) {
   # First convert the raw data and feature set into data frames
   msDataFrame <- generateMSDataFrame(rawDataFilePath)
   # R = raw data, F = feature
-  typeColumn <- rep("R", nrow(msDataFrame))
-  cbind(msDataFrame, typeColumn)
-  colnames(msDataFrame) <- c(c("RetentionTime", "MassToCharge",
-                               "Intensity", "Type"))
+  Type <- rep("R", nrow(msDataFrame))
+  msDataFrame <- cbind(msDataFrame, Type)
 
   featureDataFrame <- generateFeatureDataFrame(featureFilePath)
-  typeColumn <- rep("F", nrow(featureDataFrame))
-  cbind(featureDataFrame, typeColumn)
-  colnames(featureDataFrame) <- c(c("RetentionTime", "MassToCharge",
-                                    "Intensity", "Type"))
+  Type <- rep("F", nrow(featureDataFrame))
+  featureDataFrame <- cbind(featureDataFrame, Type)
 
   totalDataFrame <- rbind(msDataFrame, featureDataFrame)
   ggplot2::ggplot(totalDataFrame,

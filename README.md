@@ -63,21 +63,23 @@ comparisons, analysis, and visualization. The primary function is
 `compareFeatures`, which takes two feature sets and compares the
 features between them. This allows users to check things like which
 features in the first set also occur in the second, and how many
-features are in common.
+features are in common. The function `getFeatureByIdx` is a simple
+interface to a featureXML file, and allows users to select a feature in
+the file (by its index) to get its retention time, mass-to-charge, and
+signal intensity values.
 
-The function `getFeatureByIdx` is a simple interface to a featureXML
-file, and allows users to select a feature in the file (by its index) to
-get its retention time, mass-to-charge, and signal intensity values.
+The function `plotRawData` loads a single raw mass spectrometry data
+file and uses it to draw a 2D scatter plot. The function
+`plotSingleFeatureSet` loads a single feature set and uses it to draw a
+2D scatter plot with colouring to simulate three dimensions. The
+function `plotTwoFeatureSets` loads two feature sets and plots both at
+the same time (with different colours for differentiation). The function
+`plotFeatureSetOnRawData` loads a single raw mass spectrometry data file
+and a single feature set and plots both at the same time (with different
+colours for differentiation).
 
-The function `plotRawData`
-
-The function `plotSingleFeatureSet`
-
-The function `plotTwoFeatureSets`
-
-The function `plotFeatureSetOnRawData`
-
-Warning: these functions will often take a while to run!
+*Warning: depending on the size of the data, some of these functions may
+take a few minutes to execute.*
 
 For more details, refer to the package vignette.
 
@@ -87,7 +89,7 @@ browseVignettes("msFeatureCmp")
 
 An overview of the package is illustrated below.
 
-<!-- ![](./inst/extdata/overview.png) -->
+![](./inst/extdata/overview.png)
 
 The package tree structure is provided below.
 
@@ -193,6 +195,9 @@ analysis. *Nat Methods, 13*, 741-748.
 Ushey, K., Allaire, J., & Tang, Y. (2021). *reticulate: interface to
 ‘Python’*. R package version 1.22.
 <https://CRAN.R-project.org/package=reticulate>
+
+Wickham, H. (2016). *ggplot2: elegant graphics for data analysis*. R
+package version 3.3.5. <https://ggplot2.tidyverse.org>
 
 ## Acknowledgements
 
