@@ -41,9 +41,19 @@ If R has trouble finding the correct Python environment (and you have checked th
 
 ## Functions
 
-**compareFeatures(rawDataFilePath, featureFilePath1, featureFilePath2)**
+`compareFeatures(rawDataFilePath, featureFilePath1, featureFilePath2)`: the primary function for comparing feature sets and performing basic analysis. A raw mass spectrometry file, in the open-source OpenMS mzML format, is loaded, along with two feature sets, in the open-source OpenMS featureXML format. The two sets of features are compared against each other, with the function looking for groups of "similar" features (which we define to be features that are found within fixed distances of each other), calculating and assigning scores such as recall, precision, and F_1 to each set.
 
-**getFeatureByIdx(featureFilePath, idx)**
+Using the example raw files provided in `inst/extdata`, execution may take several minutes to complete.
+
+`getFeatureByIdx(featureFilePath, idx)`: this function is a simple interface into a featureXML file, and allows users to select a feature in the specified file and peek at its data: retention time, mass-to-charge, and signal intensity. The feature is selected by providing the function with an index, which will be used to select the requested feature at its position in the sorted feature set (by ascending RT).
+
+`plotRawData(rawDataFilePath)`: the purpose of this function is to simply plot out a raw mass spectrometry data file (in mzML format) in a two-dimensional scatter plot (with colour to indicate intensity, the third dimension). Since raw MS data files typically have enormous amounts of information (even including the provided example files), the plot may not depict patterns in the data as accurately as possible.
+
+`plotSingleFeatureSet(featureFilePath)`: the purpose of this function is to simply plot out a single set of found features (from a featureXML file) in a two-dimensional scatter plot (with colour to indicate intensity, the third dimension).
+
+`plotTwoFeatureSets(featureFilePath1, featureFilePath2)`: this function "duplicates" the functionality of the previous function, plotting out two sets of found features (featureXML) in a two-dimensional scatter plot, with the second set overlaid atop the first.
+
+`plotFeatureSetOnRawData(rawDataFilePath, featureFilePath)`: this function combines the functionality of the first two visualization functions and takes both a raw mass spectrometry data file (mzML) as well as a feature set file (featureXML), and plots both in a two-dimensional scatter plot, with the features overlaid atop the raw data. It is important to note that the features may not exactly line up with the raw data, as mass spectometers have a limited scan speed.
 
 ## References
 
@@ -58,6 +68,10 @@ Röst, H., Schmitt, U., Aebersold, R., & Malmström, M. (2014). pyOpenMS: a Pyth
 Röst, H., Sachsenberg, T., Aiche, S., Bielow, C., Weisser, H., Aicheler, F., Andreotti, S., Ehrlich, H.-C., Gutenbrunner, P., Kenar, E., Liang, X., Nahnsen, S., Nilse, L., Pfeuffer, J., Rosenberger, G., Rurik, M., Schmitt, U., Veit, J., Walzer, M., ... Kohlbacher, O. (2016). OpenMS: a flexible open-source software platform for mass spectrometry data analysis. *Nat Methods, 13*, 741-748. https://doi.org/10.1038/nmeth.3959
 
 Ushey, K., Allaire, J., & Tang, Y. (2021). *reticulate: interface to 'Python'*. R package version 1.22. https://CRAN.R-project.org/package=reticulate
+
+Wickham, H. (2016). *ggplot2: elegant graphics for data analysis*. R package version 3.3.5. https://ggplot2.tidyverse.org
+
+## Build info
 
 ``` {r}
 sessionInfo()

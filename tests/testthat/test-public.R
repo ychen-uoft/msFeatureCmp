@@ -1,8 +1,6 @@
 # Comparator integration tests
 
 test_that("feature comparator pipeline works", {
-  skip("Too long")
-
   cmpOutput <- capture.output(
     msFeatureCmp::compareFeatures(
       system.file("extdata",
@@ -16,6 +14,7 @@ test_that("feature comparator pipeline works", {
                   package = "msFeatureCmp")))
   outputStr <- paste(cmpOutput, collapse = "\n")
 
+  # Dump-and-compare currently not working
   # refInput <- readLines(system.file("extdata", "pipeline-output.txt",
   #                                   package = "msFeatureCmp"))
   # expect_equal(outputStr, refInput)
