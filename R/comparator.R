@@ -270,5 +270,3 @@ getFeatureByIdx <- function(featureFilePath, idx) {
                reticulate::py_to_r(feature$getIntensity()))
   return(retInfo)
 }
-
-# TODO: add more functions for comparisons and plotting

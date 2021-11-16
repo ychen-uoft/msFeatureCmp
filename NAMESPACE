@@ -2,3 +2,7 @@
 
 export(compareFeatures)
 export(getFeatureByIdx)
+export(plotFeatureSetOnRawData)
+export(plotRawData)
+export(plotSingleFeatureSet)
+export(plotTwoFeatureSets)

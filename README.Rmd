@@ -54,11 +54,12 @@ ls("package:msFeatureCmp")
 `msFeatureCmp` contains XYZ public functions for enabling feature comparisons, analysis, and visualization.
 The primary function is `compareFeatures`, which takes two feature sets and compares the features between
 them. This allows users to check things like which features in the first set also occur in the second, and
-how many features are in common. Depending on the size of the feature sets, this function may take a while
-to run!
+how many features are in common.
 
 The function `getFeatureByIdx` is a simple interface into a featureXML file, and allows users to select a
 feature in the file (by its index) to get its retention time, mass-to-charge, and signal intensity values.
+
+Warning: these functions will often take a while to run!
 
 For more details, refer to the package vignette.
 
