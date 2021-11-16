@@ -1,4 +1,5 @@
-# This file contains the plotting functions for the msFeatureCmp package.
+# This file contains the public visualization functions for the msFeatureCmp
+# package.
 
 #' Generates a data frame from a raw mass spectrometry dataset.
 #'

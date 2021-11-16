@@ -20,9 +20,6 @@ string.}
 This can be used to compare the results of different feature finding
 algorithms that have been run on the same raw dataset.
 }
-\details{
-TODO: what does this function do?
-}
 \examples{
 \dontrun{
 compareFeatures("inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML",

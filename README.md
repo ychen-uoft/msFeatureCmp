@@ -58,18 +58,24 @@ before installing the package.
 ls("package:msFeatureCmp")
 ```
 
--   Describe each of the public APIs here
-
-`msFeatureCmp` contains XYZ public functions for enabling feature
+`msFeatureCmp` contains six public functions for enabling feature
 comparisons, analysis, and visualization. The primary function is
 `compareFeatures`, which takes two feature sets and compares the
 features between them. This allows users to check things like which
 features in the first set also occur in the second, and how many
 features are in common.
 
-The function `getFeatureByIdx` is a simple interface into a featureXML
+The function `getFeatureByIdx` is a simple interface to a featureXML
 file, and allows users to select a feature in the file (by its index) to
 get its retention time, mass-to-charge, and signal intensity values.
+
+The function `plotRawData`
+
+The function `plotSingleFeatureSet`
+
+The function `plotTwoFeatureSets`
+
+The function `plotFeatureSetOnRawData`
 
 Warning: these functions will often take a while to run!
 
@@ -81,16 +87,51 @@ browseVignettes("msFeatureCmp")
 
 An overview of the package is illustrated below.
 
--   Provide an overview image (e.g. start with an mzML file and two
-    featureXML files, and then show the possible options and outputs for
-    each in a flowchart)
--   Images should be stored in “inst/extdata” and accessed with
-    <!-- ![](./inst/extdata/image.png) -->
+<!-- ![](./inst/extdata/overview.png) -->
 
 The package tree structure is provided below.
 
--   Provide the package tree (just use bash tree when the package is
-    finalized)
+    msFeatureCmp
+    ├── DESCRIPTION
+    ├── LICENSE
+    ├── NAMESPACE
+    ├── R
+    │   ├── comparator.R
+    │   ├── plotting.R
+    │   └── utils.R
+    ├── README.Rmd
+    ├── README.md
+    ├── inst
+    │   ├── CITATION
+    │   └── extdata
+    │       ├── 20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML
+    │       ├── featureSetA.featureXML
+    │       ├── featureSetB.featureXML
+    │       └── overview.png
+    ├── man
+    │   ├── compareFeatures.Rd
+    │   ├── convertFeaturesToSortedMatrix.Rd
+    │   ├── findFirstFeature.Rd
+    │   ├── generateFeatureDataFrame.Rd
+    │   ├── generateMSDataFrame.Rd
+    │   ├── getFeatureByIdx.Rd
+    │   ├── loadFeatureFile.Rd
+    │   ├── loadMSFile.Rd
+    │   ├── plotFeatureSetOnRawData.Rd
+    │   ├── plotRawData.Rd
+    │   ├── plotSingleFeatureSet.Rd
+    │   ├── plotTwoFeatureSets.Rd
+    │   ├── similarFeatures.Rd
+    │   ├── sortMatrixByColumn.Rd
+    │   └── withinThreshold.Rd
+    ├── msfeaturecmp.Rproj
+    ├── tests
+    │   ├── testthat
+    │   │   ├── test-public.R
+    │   │   └── test-utils.R
+    │   └── testthat.R
+    └── vignettes
+        └── Introduction.Rmd
 
 ## Contributions
 
@@ -114,7 +155,8 @@ was obtained by converting and filtering a tsv file, containing results,
 that was provided with the raw data (which was obtained by running one
 of MaxQuant’s feature finding algorithms on it).
 
--   Don’t forget to add whatever package was used for plotting
+For the visualization functions, the R package `ggplot2` was used to
+draw scatter plots and overlays.
 
 ## References
 

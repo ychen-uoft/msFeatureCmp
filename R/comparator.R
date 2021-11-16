@@ -1,9 +1,5 @@
 # This file contains the public APIs for the msFeatureCmp package.
 
-# The global pyOpenMS Python import. This allows the package to interface with
-# the raw mass spectrometry data.
-# ropenms <- reticulate::import("pyopenms", convert = FALSE)
-
 # Global constants for feature matrices
 RT_IDX <- 1  # Retention time index
 MZ_IDX <- 2  # Mass-to-charge index
@@ -20,8 +16,6 @@ MZ_THRESHOLD <- 0.01
 #'
 #' This can be used to compare the results of different feature finding
 #' algorithms that have been run on the same raw dataset.
-#'
-#' TODO: what does this function do?
 #'
 #' @param rawDataFilePath The location of the mzML file, as a string.
 #' @param featureFilePath1 The location of the first featureXML file, as a

@@ -1,6 +1,6 @@
 # This file contains the private helper functions for the msFeatureCmp package.
 # Examples in this file cannot be run by roxygen because all the functions are
-# private.
+# private. Use the unit tests instead.
 
 #' Loads a raw mass spectrometry run into memory as an MSExperiment object. The
 #' input MS file must be in mzML (OpenMS) format.
