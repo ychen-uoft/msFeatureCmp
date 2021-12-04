@@ -1,10 +1,11 @@
 # This file contains the public visualization functions for the msFeatureCmp
 # package.
 
-#' Generates a data frame from a raw mass spectrometry dataset.
+#' Mass spectrometry data frame generator.
 #'
-#' Every data point (peak) is represented as a row containing its retention
-#' time, mass-to-charge, and signal intensity.
+#' Generates a data frame from a raw mass spectrometry dataset. Every data
+#' point/peak is represented as a row containing its retention time, mass-to-
+#' charge, and signal intensity.
 #'
 #' @param rawDataFilePath The location of the mzML file, as a string.
 #'
@@ -15,6 +16,8 @@
 #' msFrame <- generateMSDataFrame(
 #' "inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML")
 #' }
+#'
+#' @import reticulate
 generateMSDataFrame <- function(rawDataFilePath) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
 
@@ -56,14 +59,19 @@ generateMSDataFrame <- function(rawDataFilePath) {
   return(msFrame)
 }
 
-#' Plots a raw mass spectrometry dataset onto a scatter plot with colour.
+#' Raw data plotter.
 #'
-#' The x-axis represents retention time, the y-axis represents mass-to-charge,
-#' and the z-axis (the colour) represents intensity.
+#' Plots a raw mass spectrometry dataset onto a scatter plot.
+#'
+#' The x-axis represents retention time (in sec), the y-axis represents mass-
+#' to-charge (in Th), and the z-axis (with darker colours for greater values)
+#' represents signal intensity (unitless).
 #'
 #' This function may take a while to run.
 #'
 #' @param rawDataFilePath The location of the mzML file, as a string.
+#'
+#' @return Nothing. The plot is outputted to the screen.
 #'
 #' @examples
 #' \dontrun{
@@ -71,18 +79,21 @@ generateMSDataFrame <- function(rawDataFilePath) {
 #' }
 #'
 #' @export
+#' @import ggplot2
 plotRawData <- function(rawDataFilePath) {
   msDataFrame <- generateMSDataFrame(rawDataFilePath)
   ggplot2::ggplot(msDataFrame,
                   ggplot2::aes(x = RetentionTime,
                                y = MassToCharge,
                                colour = Intensity)) + ggplot2::geom_point()
+  return()
 }
 
-#' Generates a data frame from a feature set.
+#' Data frame generator.
 #'
-#' Every feature is represented as a row containing its retention time, mass-
-#' to-charge, and signal intensity.
+#' Generates a data frame from a feature set. Every feature is represented as a
+#' row, containing its retention time, mass-to-charge, and signal intensity, in
+#' that order.
 #'
 #' @param featureFilePath The location of the featureXML file, as a string.
 #'
@@ -93,6 +104,8 @@ plotRawData <- function(rawDataFilePath) {
 #' featureFrame <- generateFeatureDataFrame(
 #' "inst/extdata/featureSetA.featureXML")
 #' }
+#'
+#' @import reticulate
 generateFeatureDataFrame <- function(featureFilePath) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
 
@@ -103,14 +116,19 @@ generateFeatureDataFrame <- function(featureFilePath) {
   return(featureFrame)
 }
 
-#' Plots a feature set onto a blank scatter plot with colour.
+#' Single feature set plotter.
 #'
-#' The x-axis represents retention time, the y-axis represents mass-to-charge,
-#' and the z-axis (the colour) represents intensity.
+#' Plots a single feature set onto a blank scatter plot.
+#'
+#' The x-axis represents retention time (in sec), the y-axis represents mass-
+#' to-charge (in Th), and the z-axis (with darker colours for greater values)
+#' represents signal intensity (unitless).
 #'
 #' This function may take a while to run.
 #'
 #' @param featureFilePath The location of the featureXML file, as a string.
+#'
+#' @return Nothing. The graph is outputted to the screen.
 #'
 #' @examples
 #' \dontrun{
@@ -118,19 +136,23 @@ generateFeatureDataFrame <- function(featureFilePath) {
 #' }
 #'
 #' @export
+#' @import ggplot2
 plotSingleFeatureSet <- function(featureFilePath) {
   featureDataFrame <- generateFeatureDataFrame(featureFilePath)
   ggplot2::ggplot(featureDataFrame,
                   ggplot2::aes(x = RetentionTime,
                                y = MassToCharge,
                                colour = Intensity)) + ggplot2::geom_point()
+  return()
 }
 
-#' Plots two feature sets (overlapping) onto a blank scatter plot,
-#' distinguished by colour.
+#' Overlapping feature set plotter.
 #'
-#' The x-axis represents retention time and the y-axis represents mass-to-
-#' charge.
+#' Plots two feature sets, at the same time, onto a blank scatter plot. The two
+#' feature sets are distinguished by colour.
+#'
+#' The x-axis represents retention time (in sec) and the y-axis represents
+#' mass-to-charge (in Th).
 #'
 #' This function may take a while to run.
 #'
@@ -139,6 +161,8 @@ plotSingleFeatureSet <- function(featureFilePath) {
 #' @param featureFilePath2 The location of the second featureXML file, as a
 #' string.
 #'
+#' @return Nothing. The plot is outputted to the screen.
+#'
 #' @examples
 #' \dontrun{
 #' plotTwoFeatureSets("inst/extdata/featureSetA.featureXML",
@@ -146,6 +170,7 @@ plotSingleFeatureSet <- function(featureFilePath) {
 #' }
 #'
 #' @export
+#' @import ggplot2
 plotTwoFeatureSets <- function(featureFilePath1, featureFilePath2) {
   # First convert both feature sets into data frames
   featureDataFrameA <- generateFeatureDataFrame(featureFilePath1)
@@ -163,18 +188,25 @@ plotTwoFeatureSets <- function(featureFilePath1, featureFilePath2) {
                   ggplot2::aes(x = RetentionTime,
                                y = MassToCharge,
                                colour = Type)) + ggplot2::geom_point()
+
+  return()
 }
 
-#' Plots a feature set layered on top of its raw mass spectrometry dataset,
-#' distinguished by colour.
+#' Layered feature set plotter.
 #'
-#' The x-axis represents retention time and the y-axis represents mass-to-
-#' charge.
+#' Creates a scatter plot, where the given feature set is layered on top of its
+#' raw mass spectrometry dataset. The data is distinguished from the features
+#' by colour.
+#'
+#' The x-axis represents retention time (in sec) and the y-axis represents
+#' mass-to-charge (in Th).
 #'
 #' This function may take a while to run.
 #'
 #' @param rawDataFilePath The location of the mzML file, as a string.
 #' @param featureFilePath The location of the featureXML file, as a string.
+#'
+#' @return Nothing. The plot is outputted to the screen.
 #'
 #' @examples
 #' \dontrun{
@@ -184,6 +216,7 @@ plotTwoFeatureSets <- function(featureFilePath1, featureFilePath2) {
 #' }
 #'
 #' @export
+#' @import ggplot2
 plotFeatureSetOnRawData <- function(rawDataFilePath, featureFilePath) {
   # First convert the raw data and feature set into data frames
   msDataFrame <- generateMSDataFrame(rawDataFilePath)
@@ -200,4 +233,6 @@ plotFeatureSetOnRawData <- function(rawDataFilePath, featureFilePath) {
                   ggplot2::aes(x = RetentionTime,
                                y = MassToCharge,
                                colour = Type)) + ggplot2::geom_point()
+
+  return()
 }

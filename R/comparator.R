@@ -11,17 +11,19 @@ RT_THRESHOLD <- 5
 MZ_THRESHOLD <- 0.01
 # IM_THRESHOLD <- 0.031
 
-#' Compares two sets of mass spectrometry features corresponding to a single MS
-#' run.
+#' Feature set comparator.
 #'
-#' This can be used to compare the results of different feature finding
+#' Compares two sets of mass spectrometry features corresponding to a single MS
+#' run. This can be used to compare the results of different feature finding
 #' algorithms that have been run on the same raw dataset.
 #'
-#' @param rawDataFilePath The location of the mzML file, as a string.
+#' @param rawDataFilePath The location of the mzML raw data file, as a string.
 #' @param featureFilePath1 The location of the first featureXML file, as a
 #' string.
 #' @param featureFilePath2 The location of the second featureXML file, as a
 #' string.
+#'
+#' @return Nothing. A basic statistical analysis is printed to the screen.
 #'
 #' @examples
 #' \dontrun{
@@ -31,6 +33,7 @@ MZ_THRESHOLD <- 0.01
 #' }
 #'
 #' @export
+#' @import reticulate
 compareFeatures <- function(rawDataFilePath, featureFilePath1,
                             featureFilePath2) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
@@ -195,9 +198,8 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
 
   # Prints some common statistics. Like a lambda function, only visible here.
   #
-  # @param zeroMatches The number of unmatched features, as an integer
-  # @param multipleMatches The number of multiply matched features, as an
-  # integer
+  # zeroMatches: The number of unmatched features, as an integer
+  # multipleMatches: The number of multiply matched features, as an integer
   printSomeStats <- function(zeroMatches, multipleMatches) {
     cat("Number of common features: ", numCommonFeatures, "\n")
     cat("Recall:                    ", recall, "\n")
@@ -230,16 +232,19 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
 
   cat("Using set 2 as the ground truth\n")
   printSomeStats(numUnmatchedFeaturesB, numMultiplyMatchedFeaturesBA)
+  return()
 }
 
-#' Retrieves information about the feature at the given index in the given
-#' featureXML file.
+#' Specific feature retrieval.
 #'
-#' In particular, this function prints the feature's retention time, mass-to-
-#' charge, and signal intensity, if it exists, and throws an error otherwise.
+#' Gets information (in particular, retention time, mass-to-charge, and signal
+#' intensity) for the feature at the given index in the given feature file. If
+#' the feature does not exist, an error is thrown.
 #'
 #' @param featureFilePath The location of the featureXML file, as a string.
 #' @param idx The index of the required feature in the set, as an integer.
+#'
+#' @return The specified feature's RT, m/z, and intensity, as a string.
 #'
 #' @examples
 #' \dontrun{
@@ -247,6 +252,7 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
 #' }
 #'
 #' @export
+#' @import reticulate
 getFeatureByIdx <- function(featureFilePath, idx) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
 

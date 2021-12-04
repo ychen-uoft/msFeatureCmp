@@ -2,8 +2,10 @@
 # Examples in this file cannot be run by roxygen because all the functions are
 # private. Use the unit tests instead.
 
-#' Loads a raw mass spectrometry run into memory as an MSExperiment object. The
-#' input MS file must be in mzML (OpenMS) format.
+#' Raw data file loader.
+#'
+#' Loads a raw mass spectrometry run/data file into memory as an MSExperiment
+#' object. The input MS file must be in mzML (OpenMS) format.
 #'
 #' @param filePath The location of the mzML file, as a string.
 #'
@@ -14,6 +16,8 @@
 #' experiment <- loadMSFile("inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML")
 #' experiment$getNrSpectra()  # Returns 8
 #' }
+#'
+#' @import reticulate
 loadMSFile <- function(filePath) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
 
@@ -22,7 +26,9 @@ loadMSFile <- function(filePath) {
   return(experiment)
 }
 
-#' Loads a mass spectrometry feature set (containing found features) into
+#' Feature set loader.
+#'
+#' Loads a mass spectrometry feature set, containing found features, into
 #' memory as a FeatureMap object. The feature file must be in featureXML
 #' (OpenMS) format.
 #'
@@ -35,6 +41,8 @@ loadMSFile <- function(filePath) {
 #' featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
 #' featureSet$size()  # Returns 720
 #' }
+#'
+#' @import reticulate
 loadFeatureFile <- function(filePath) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
 
@@ -43,7 +51,10 @@ loadFeatureFile <- function(filePath) {
   return(featureSet)
 }
 
-#' Checks if two values are within a certain distance of each other.
+#' Threshold checker.
+#'
+#' Checks if two values are within a certain one-dimensional distance of each
+#' other.
 #'
 #' @param value1 The first value, as a number.
 #' @param value2 The second value, as a number.
@@ -66,11 +77,13 @@ withinThreshold <- function(value1, value2, threshold) {
   return(isWithinThreshold)
 }
 
+#' Feature similarity checker.
+#'
 #' Compares two features to determine if they are similar.
 #'
 #' We consider features to be similar if their retention times and mass-to-
-#' charge values are within some fixed thresholds of each other (which can be
-#' provided by the user).
+#' charge values are within some fixed threshold of each other, which can be
+#' determined and provided by the user.
 #'
 #' The provided features can be ropenms Feature objects or vectors (e.g. from
 #' a feature matrix).
@@ -92,6 +105,8 @@ withinThreshold <- function(value1, value2, threshold) {
 #' featureB$setMZ(300.005)
 #' similarFeatures(featureA, featureB)  # Returns TRUE
 #' }
+#'
+#' @import reticulate
 similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
                             mzThreshold = MZ_THRESHOLD) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
@@ -118,7 +133,9 @@ similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
   return(isSimilar)
 }
 
-#' Sorts a matrix by a given column number.
+#' Matrix sorter.
+#'
+#' Sorts a matrix by a given column.
 #'
 #' @param matrix The matrix to sort.
 #' @param column The column number to use as key.
@@ -146,11 +163,12 @@ sortMatrixByColumn <- function(matrix, column = 1L, descending = FALSE) {
   return(sortedMatrix)
 }
 
-#' Converts a loaded set of features into a matrix of features.
+#' Feature set converter.
 #'
-#' Each row of the matrix represents a feature, and contains its retention
-#' time, mass-to-charge, and signal intensity values, in that order. The matrix
-#' will be also sorted by ascending RT.
+#' Converts a loaded set of features into a matrix of features. Each row of the
+#' matrix will represent a feature, and contain its retention time, mass-to-
+#' charge, and signal intensity values, in that order. The matrix will also be
+#' sorted by ascending RT.
 #'
 #' @param featureSet The set of features to convert, as a FeatureMap.
 #'
@@ -163,6 +181,8 @@ sortMatrixByColumn <- function(matrix, column = 1L, descending = FALSE) {
 #' featureMatrix[1, ]
 #' # Returns [800.002794376452, 614.596298389786, 10900.7001953125]
 #' }
+#'
+#' @import reticulate
 convertFeaturesToSortedMatrix <- function(featureSet) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
 
@@ -184,13 +204,15 @@ convertFeaturesToSortedMatrix <- function(featureSet) {
   return(sortedFeatureMatrix)
 }
 
-#' Finds the first feature in a feature matrix that has its element at a given
-#' key equal to a given target. If no feature satisfies the requirement, counts
-#' how many features have its element at that same key less than the target
-#' (its rank in the matrix).
+#' Feature matrix feature locator.
+#'
+#' Finds the first feature in a feature matrix that has its specified element
+#' at a given key equal to a given target. If no feature satisfies the
+#' requirement, counts how many features have, at the same key, an element
+#' strictly less than the target (its rank in the matrix).
 #'
 #' This function uses binary search to find the feature, so the feature matrix
-#' must be sorted (ascending, in the key column).
+#' must be sorted ascending in the key column.
 #'
 #' @param sortedFeatureMatrix The sorted feature matrix to search.
 #' @param key The column in the matrix to search in.
