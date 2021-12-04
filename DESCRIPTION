@@ -12,7 +12,8 @@ LazyData: true
 Depends: R (>= 4.1)
 Imports:
     ggplot2,
-    reticulate
+    reticulate,
+    shiny
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 SystemRequirements: Python (3.5-3.7) with pyOpenMS (>= 2.4.0)
