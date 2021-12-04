@@ -1,6 +1,12 @@
-# This file contains the private helper functions for the msFeatureCmp package.
-# Examples in this file cannot be run by roxygen because all the functions are
-# private. Use the unit tests instead.
+# utils.R
+# Package: msFeatureCmp
+# Author: Yijia Chen
+# Date: 2021-12-04
+# Version: 0.1.0
+
+# This file contains all the private helper functions for the msFeatureCmp
+# package. Note: examples cannot be run by roxygen because all the functions
+# are private (i.e. not exported). Use the unit tests instead.
 
 #' Raw data file loader.
 #'
@@ -253,3 +259,5 @@ findFirstFeature <- function(sortedFeatureMatrix, key = RT_IDX, target = 0) {
   }
   return(resultIdx)
 }
+
+# [END]

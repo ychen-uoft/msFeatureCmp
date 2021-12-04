@@ -1,3 +1,11 @@
+# app.R
+# Package: msFeatureCmp
+# Author: Yijia Chen
+# Date: 2021-12-04
+# Version: 0.1.0
+
+# This file contains the source for the package's shiny app.
+
 library("shiny")
 
 ui <- fluidPage(
@@ -16,3 +24,5 @@ server <- function(input, output) {
 }
 
 shiny::shinyApp(ui = ui, server = server)
+
+# [END]

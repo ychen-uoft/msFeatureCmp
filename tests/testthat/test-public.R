@@ -1,4 +1,10 @@
-# Comparator integration tests
+# test-public.R
+# Package: msFeatureCmp
+# Author: Yijia Chen
+# Date: 2021-12-04
+# Version: 0.1.0
+
+# This file contains all the public API integration tests.
 
 test_that("feature comparator pipeline works", {
 #   cmpOutput <- capture.output(
@@ -29,3 +35,5 @@ test_that("feature retrieval works", {
   expect_equal(featureInfo[MZ_IDX], 814.443167554736)
   expect_equal(featureInfo[IT_IDX], 4485.009765625)
 })
+
+# [END]

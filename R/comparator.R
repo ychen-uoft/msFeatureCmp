@@ -1,4 +1,10 @@
-# This file contains the public APIs for the msFeatureCmp package.
+# comparator.R
+# Package: msFeatureCmp
+# Author: Yijia Chen
+# Date: 2021-12-04
+# Version: 0.1.0
+
+# This file contains all the public APIs for the msFeatureCmp package.
 
 # Global constants for feature matrices
 RT_IDX <- 1  # Retention time index
@@ -232,7 +238,7 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
 
   cat("Using set 2 as the ground truth\n")
   printSomeStats(numUnmatchedFeaturesB, numMultiplyMatchedFeaturesBA)
-  return()
+  return(invisible(NULL))
 }
 
 #' Specific feature retrieval.
@@ -270,3 +276,5 @@ getFeatureByIdx <- function(featureFilePath, idx) {
                reticulate::py_to_r(feature$getIntensity()))
   return(retInfo)
 }
+
+# [END]

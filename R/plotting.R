@@ -1,5 +1,11 @@
-# This file contains the public visualization functions for the msFeatureCmp
-# package.
+# plotting.R
+# Package: msFeatureCmp
+# Author: Yijia Chen
+# Date: 2021-12-04
+# Version: 0.1.0
+
+# This file contains all the public visualization functions for the
+# msFeatureCmp package.
 
 #' Mass spectrometry data frame generator.
 #'
@@ -86,7 +92,7 @@ plotRawData <- function(rawDataFilePath) {
                   ggplot2::aes(x = RetentionTime,
                                y = MassToCharge,
                                colour = Intensity)) + ggplot2::geom_point()
-  return()
+  return(invisible(NULL))
 }
 
 #' Data frame generator.
@@ -143,7 +149,7 @@ plotSingleFeatureSet <- function(featureFilePath) {
                   ggplot2::aes(x = RetentionTime,
                                y = MassToCharge,
                                colour = Intensity)) + ggplot2::geom_point()
-  return()
+  return(invisible(NULL))
 }
 
 #' Overlapping feature set plotter.
@@ -189,7 +195,7 @@ plotTwoFeatureSets <- function(featureFilePath1, featureFilePath2) {
                                y = MassToCharge,
                                colour = Type)) + ggplot2::geom_point()
 
-  return()
+  return(invisible(NULL))
 }
 
 #' Layered feature set plotter.
@@ -234,5 +240,7 @@ plotFeatureSetOnRawData <- function(rawDataFilePath, featureFilePath) {
                                y = MassToCharge,
                                colour = Type)) + ggplot2::geom_point()
 
-  return()
+  return(invisible(NULL))
 }
+
+# [END]

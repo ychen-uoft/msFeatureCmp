@@ -1,4 +1,10 @@
-# Utility function unit tests
+# test-utils.R
+# Package: msFeatureCmp
+# Author: Yijia Chen
+# Date: 2021-12-04
+# Version: 0.1.0
+
+# This file contains all the utility function unit tests.
 
 test_that("loading raw data works", {
   # Load the example mzML file and count the number of spectra
@@ -120,3 +126,5 @@ test_that("binary search works", {
   # No occurrences of 6, so returns the rank of 6 in the matrix, which is 5
   expect_equal(msFeatureCmp:::findFirstFeature(m, 1, 6), 5)
 })
+
+# [END]
