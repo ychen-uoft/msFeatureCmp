@@ -2,18 +2,24 @@
 % Please edit documentation in R/plotting.R
 \name{plotSingleFeatureSet}
 \alias{plotSingleFeatureSet}
-\title{Plots a feature set onto a blank scatter plot with colour.}
+\title{Single feature set plotter.}
 \usage{
 plotSingleFeatureSet(featureFilePath)
 }
 \arguments{
 \item{featureFilePath}{The location of the featureXML file, as a string.}
 }
+\value{
+Nothing. The graph is outputted to the screen.
+}
 \description{
-The x-axis represents retention time, the y-axis represents mass-to-charge,
-and the z-axis (the colour) represents intensity.
+Plots a single feature set onto a blank scatter plot.
 }
 \details{
+The x-axis represents retention time (in sec), the y-axis represents mass-
+to-charge (in Th), and the z-axis (with darker colours for greater values)
+represents signal intensity (unitless).
+
 This function may take a while to run.
 }
 \examples{

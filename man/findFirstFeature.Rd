@@ -2,10 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{findFirstFeature}
 \alias{findFirstFeature}
-\title{Finds the first feature in a feature matrix that has its element at a given
-key equal to a given target. If no feature satisfies the requirement, counts
-how many features have its element at that same key less than the target
-(its rank in the matrix).}
+\title{Feature matrix feature locator.}
 \usage{
 findFirstFeature(sortedFeatureMatrix, key = RT_IDX, target = 0)
 }
@@ -21,8 +18,14 @@ The index of the first feature that has its element at the given key
 equal to the given target, if it exists; the feature's rank otherwise.
 }
 \description{
+Finds the first feature in a feature matrix that has its specified element
+at a given key equal to a given target. If no feature satisfies the
+requirement, counts how many features have, at the same key, an element
+strictly less than the target (its rank in the matrix).
+}
+\details{
 This function uses binary search to find the feature, so the feature matrix
-must be sorted (ascending, in the key column).
+must be sorted ascending in the key column.
 }
 \examples{
 \dontrun{

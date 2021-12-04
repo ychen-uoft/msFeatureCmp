@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{similarFeatures}
 \alias{similarFeatures}
-\title{Compares two features to determine if they are similar.}
+\title{Feature similarity checker.}
 \usage{
 similarFeatures(
   feature1,
@@ -24,11 +24,13 @@ similarFeatures(
 TRUE if the two features are similar; FALSE otherwise.
 }
 \description{
-We consider features to be similar if their retention times and mass-to-
-charge values are within some fixed thresholds of each other (which can be
-provided by the user).
+Compares two features to determine if they are similar.
 }
 \details{
+We consider features to be similar if their retention times and mass-to-
+charge values are within some fixed threshold of each other, which can be
+determined and provided by the user.
+
 The provided features can be ropenms Feature objects or vectors (e.g. from
 a feature matrix).
 }
@@ -42,4 +44,5 @@ featureB$setRT(6)
 featureB$setMZ(300.005)
 similarFeatures(featureA, featureB)  # Returns TRUE
 }
+
 }

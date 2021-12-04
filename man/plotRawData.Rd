@@ -2,18 +2,24 @@
 % Please edit documentation in R/plotting.R
 \name{plotRawData}
 \alias{plotRawData}
-\title{Plots a raw mass spectrometry dataset onto a scatter plot with colour.}
+\title{Raw data plotter.}
 \usage{
 plotRawData(rawDataFilePath)
 }
 \arguments{
 \item{rawDataFilePath}{The location of the mzML file, as a string.}
 }
+\value{
+Nothing. The plot is outputted to the screen.
+}
 \description{
-The x-axis represents retention time, the y-axis represents mass-to-charge,
-and the z-axis (the colour) represents intensity.
+Plots a raw mass spectrometry dataset onto a scatter plot.
 }
 \details{
+The x-axis represents retention time (in sec), the y-axis represents mass-
+to-charge (in Th), and the z-axis (with darker colours for greater values)
+represents signal intensity (unitless).
+
 This function may take a while to run.
 }
 \examples{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{withinThreshold}
 \alias{withinThreshold}
-\title{Checks if two values are within a certain distance of each other.}
+\title{Threshold checker.}
 \usage{
 withinThreshold(value1, value2, threshold)
 }
@@ -17,7 +17,8 @@ withinThreshold(value1, value2, threshold)
 TRUE if the values are within the distance; FALSE otherwise.
 }
 \description{
-Checks if two values are within a certain distance of each other.
+Checks if two values are within a certain one-dimensional distance of each
+other.
 }
 \examples{
 \dontrun{

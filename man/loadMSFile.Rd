@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{loadMSFile}
 \alias{loadMSFile}
-\title{Loads a raw mass spectrometry run into memory as an MSExperiment object. The
-input MS file must be in mzML (OpenMS) format.}
+\title{Raw data file loader.}
 \usage{
 loadMSFile(filePath)
 }
@@ -14,12 +13,13 @@ loadMSFile(filePath)
 The in-memory representation of the MS run, as an MSExperiment.
 }
 \description{
-Loads a raw mass spectrometry run into memory as an MSExperiment object. The
-input MS file must be in mzML (OpenMS) format.
+Loads a raw mass spectrometry run/data file into memory as an MSExperiment
+object. The input MS file must be in mzML (OpenMS) format.
 }
 \examples{
 \dontrun{
 experiment <- loadMSFile("inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML")
 experiment$getNrSpectra()  # Returns 8
 }
+
 }

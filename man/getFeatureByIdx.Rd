@@ -2,8 +2,7 @@
 % Please edit documentation in R/comparator.R
 \name{getFeatureByIdx}
 \alias{getFeatureByIdx}
-\title{Retrieves information about the feature at the given index in the given
-featureXML file.}
+\title{Specific feature retrieval.}
 \usage{
 getFeatureByIdx(featureFilePath, idx)
 }
@@ -12,9 +11,13 @@ getFeatureByIdx(featureFilePath, idx)
 
 \item{idx}{The index of the required feature in the set, as an integer.}
 }
+\value{
+The specified feature's RT, m/z, and intensity, as a string.
+}
 \description{
-In particular, this function prints the feature's retention time, mass-to-
-charge, and signal intensity, if it exists, and throws an error otherwise.
+Gets information (in particular, retention time, mass-to-charge, and signal
+intensity) for the feature at the given index in the given feature file. If
+the feature does not exist, an error is thrown.
 }
 \examples{
 \dontrun{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotting.R
 \name{generateFeatureDataFrame}
 \alias{generateFeatureDataFrame}
-\title{Generates a data frame from a feature set.}
+\title{Data frame generator.}
 \usage{
 generateFeatureDataFrame(featureFilePath)
 }
@@ -13,12 +13,14 @@ generateFeatureDataFrame(featureFilePath)
 The corresponding data frame for the feature set.
 }
 \description{
-Every feature is represented as a row containing its retention time, mass-
-to-charge, and signal intensity.
+Generates a data frame from a feature set. Every feature is represented as a
+row, containing its retention time, mass-to-charge, and signal intensity, in
+that order.
 }
 \examples{
 \dontrun{
 featureFrame <- generateFeatureDataFrame(
 "inst/extdata/featureSetA.featureXML")
 }
+
 }

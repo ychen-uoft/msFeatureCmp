@@ -2,8 +2,7 @@
 % Please edit documentation in R/plotting.R
 \name{plotFeatureSetOnRawData}
 \alias{plotFeatureSetOnRawData}
-\title{Plots a feature set layered on top of its raw mass spectrometry dataset,
-distinguished by colour.}
+\title{Layered feature set plotter.}
 \usage{
 plotFeatureSetOnRawData(rawDataFilePath, featureFilePath)
 }
@@ -12,11 +11,18 @@ plotFeatureSetOnRawData(rawDataFilePath, featureFilePath)
 
 \item{featureFilePath}{The location of the featureXML file, as a string.}
 }
+\value{
+Nothing. The plot is outputted to the screen.
+}
 \description{
-The x-axis represents retention time and the y-axis represents mass-to-
-charge.
+Creates a scatter plot, where the given feature set is layered on top of its
+raw mass spectrometry dataset. The data is distinguished from the features
+by colour.
 }
 \details{
+The x-axis represents retention time (in sec) and the y-axis represents
+mass-to-charge (in Th).
+
 This function may take a while to run.
 }
 \examples{

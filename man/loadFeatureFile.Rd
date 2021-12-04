@@ -2,9 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{loadFeatureFile}
 \alias{loadFeatureFile}
-\title{Loads a mass spectrometry feature set (containing found features) into
-memory as a FeatureMap object. The feature file must be in featureXML
-(OpenMS) format.}
+\title{Feature set loader.}
 \usage{
 loadFeatureFile(filePath)
 }
@@ -15,7 +13,7 @@ loadFeatureFile(filePath)
 The in-memory representation of the feature set, as a FeatureMap.
 }
 \description{
-Loads a mass spectrometry feature set (containing found features) into
+Loads a mass spectrometry feature set, containing found features, into
 memory as a FeatureMap object. The feature file must be in featureXML
 (OpenMS) format.
 }
@@ -24,4 +22,5 @@ memory as a FeatureMap object. The feature file must be in featureXML
 featureSet <- loadFeatureFile("inst/extdata/featureSetA.featureXML")
 featureSet$size()  # Returns 720
 }
+
 }

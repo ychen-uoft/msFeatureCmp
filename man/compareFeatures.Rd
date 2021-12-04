@@ -2,13 +2,12 @@
 % Please edit documentation in R/comparator.R
 \name{compareFeatures}
 \alias{compareFeatures}
-\title{Compares two sets of mass spectrometry features corresponding to a single MS
-run.}
+\title{Feature set comparator.}
 \usage{
 compareFeatures(rawDataFilePath, featureFilePath1, featureFilePath2)
 }
 \arguments{
-\item{rawDataFilePath}{The location of the mzML file, as a string.}
+\item{rawDataFilePath}{The location of the mzML raw data file, as a string.}
 
 \item{featureFilePath1}{The location of the first featureXML file, as a
 string.}
@@ -16,8 +15,12 @@ string.}
 \item{featureFilePath2}{The location of the second featureXML file, as a
 string.}
 }
+\value{
+Nothing. A basic statistical analysis is printed to the screen.
+}
 \description{
-This can be used to compare the results of different feature finding
+Compares two sets of mass spectrometry features corresponding to a single MS
+run. This can be used to compare the results of different feature finding
 algorithms that have been run on the same raw dataset.
 }
 \examples{

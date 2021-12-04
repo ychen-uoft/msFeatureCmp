@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{convertFeaturesToSortedMatrix}
 \alias{convertFeaturesToSortedMatrix}
-\title{Converts a loaded set of features into a matrix of features.}
+\title{Feature set converter.}
 \usage{
 convertFeaturesToSortedMatrix(featureSet)
 }
@@ -13,9 +13,10 @@ convertFeaturesToSortedMatrix(featureSet)
 The corresponding sorted matrix for the feature set.
 }
 \description{
-Each row of the matrix represents a feature, and contains its retention
-time, mass-to-charge, and signal intensity values, in that order. The matrix
-will be also sorted by ascending RT.
+Converts a loaded set of features into a matrix of features. Each row of the
+matrix will represent a feature, and contain its retention time, mass-to-
+charge, and signal intensity values, in that order. The matrix will also be
+sorted by ascending RT.
 }
 \examples{
 \dontrun{
@@ -24,4 +25,5 @@ featureMatrix <- convertFeaturesToSortedMatrix(featureSet)
 featureMatrix[1, ]
 # Returns [800.002794376452, 614.596298389786, 10900.7001953125]
 }
+
 }

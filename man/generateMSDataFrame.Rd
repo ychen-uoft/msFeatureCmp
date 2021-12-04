@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotting.R
 \name{generateMSDataFrame}
 \alias{generateMSDataFrame}
-\title{Generates a data frame from a raw mass spectrometry dataset.}
+\title{Mass spectrometry data frame generator.}
 \usage{
 generateMSDataFrame(rawDataFilePath)
 }
@@ -13,12 +13,14 @@ generateMSDataFrame(rawDataFilePath)
 The corresponding data frame for the dataset.
 }
 \description{
-Every data point (peak) is represented as a row containing its retention
-time, mass-to-charge, and signal intensity.
+Generates a data frame from a raw mass spectrometry dataset. Every data
+point/peak is represented as a row containing its retention time, mass-to-
+charge, and signal intensity.
 }
 \examples{
 \dontrun{
 msFrame <- generateMSDataFrame(
 "inst/extdata/20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML")
 }
+
 }

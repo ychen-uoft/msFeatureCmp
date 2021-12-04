@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{sortMatrixByColumn}
 \alias{sortMatrixByColumn}
-\title{Sorts a matrix by a given column number.}
+\title{Matrix sorter.}
 \usage{
 sortMatrixByColumn(matrix, column = 1L, descending = FALSE)
 }
@@ -17,7 +17,7 @@ sortMatrixByColumn(matrix, column = 1L, descending = FALSE)
 The sorted matrix.
 }
 \description{
-Sorts a matrix by a given column number.
+Sorts a matrix by a given column.
 }
 \examples{
 \dontrun{

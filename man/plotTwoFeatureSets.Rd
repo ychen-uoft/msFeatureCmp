@@ -2,8 +2,7 @@
 % Please edit documentation in R/plotting.R
 \name{plotTwoFeatureSets}
 \alias{plotTwoFeatureSets}
-\title{Plots two feature sets (overlapping) onto a blank scatter plot,
-distinguished by colour.}
+\title{Overlapping feature set plotter.}
 \usage{
 plotTwoFeatureSets(featureFilePath1, featureFilePath2)
 }
@@ -14,11 +13,17 @@ string.}
 \item{featureFilePath2}{The location of the second featureXML file, as a
 string.}
 }
+\value{
+Nothing. The plot is outputted to the screen.
+}
 \description{
-The x-axis represents retention time and the y-axis represents mass-to-
-charge.
+Plots two feature sets, at the same time, onto a blank scatter plot. The two
+feature sets are distinguished by colour.
 }
 \details{
+The x-axis represents retention time (in sec) and the y-axis represents
+mass-to-charge (in Th).
+
 This function may take a while to run.
 }
 \examples{
