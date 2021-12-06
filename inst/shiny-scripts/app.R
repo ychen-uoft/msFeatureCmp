@@ -54,6 +54,7 @@ ui <- fluidPage(
     mainPanel(
       h4("Output", align = "center"),
       textOutput("textOutput"),
+      br(),
       tableOutput("tableOutput"),
       plotOutput("plotOutput"),
       width = 7
@@ -71,6 +72,7 @@ server <- function(input, output) {
 
   })
 
+  # TODO: reduce duplicate code
   # Plot button clicked (in Plot)
   observeEvent(input$runPlt, {
     # Raw data
@@ -96,6 +98,7 @@ server <- function(input, output) {
       output$textOutput <- renderText({
         "Current status: plotting raw data, please wait..."
       })
+      # Interface with the main package and plot the results
       plot <- msFeatureCmp::plotRawData(rawDataFilePath)
 
       output$textOutput <- renderText({
@@ -107,23 +110,213 @@ server <- function(input, output) {
     }
     # Feature set A
     else if (input$pltOptions == 2) {
+      if (is.null(input$featureFileA)) {
+        output$textOutput <- renderText({
+          "Error: no featureXML file for feature set A has been selected"
+        })
+      }
+      featureFilePath <- input$featureFileA$datapath
+      req(featureFilePath)
 
+      fileExt <- tools::file_ext(featureFilePath)
+      if (fileExt != "featureXML") {
+        output$textOutput <- renderText({
+          "Error: feature set A file must in featureXML format"
+        })
+      }
+      req(fileExt == "featureXML")
+
+      output$textOutput <- renderText({
+        "Current status: plotting feature set A, please wait..."
+      })
+      plot <- msFeatureCmp::plotSingleFeatureSet(featureFilePath)
+
+      output$textOutput <- renderText({
+        "Current status: done plotting feature set A"
+      })
+      output$plotOutput <- renderPlot({
+        plot
+      })
     }
-    # Feature set B
+    #Feature set B
     else if (input$pltOptions == 3) {
+      if (is.null(input$featureFileB)) {
+        output$textOutput <- renderText({
+          "Error: no featureXML file for feature set B has been selected"
+        })
+      }
+      featureFilePath <- input$featureFileB$datapath
+      req(featureFilePath)
 
+      fileExt <- tools::file_ext(featureFilePath)
+      if (fileExt != "featureXML") {
+        output$textOutput <- renderText({
+          "Error: feature set B file must in featureXML format"
+        })
+      }
+      req(fileExt == "featureXML")
+
+      output$textOutput <- renderText({
+        "Current status: plotting feature set B, please wait..."
+      })
+      plot <- msFeatureCmp::plotSingleFeatureSet(featureFilePath)
+
+      output$textOutput <- renderText({
+        "Current status: done plotting feature set B"
+      })
+      output$plotOutput <- renderPlot({
+        plot
+      })
     }
     # Both feature sets
     else if (input$pltOptions == 4) {
+      # Load feature set A first
+      if (is.null(input$featureFileA)) {
+        output$textOutput <- renderText({
+          "Error: no featureXML file for feature set A has been selected"
+        })
+      }
+      featureFilePathA <- input$featureFileA$datapath
+      req(featureFilePathA)
 
+      fileExt <- tools::file_ext(featureFilePathA)
+      if (fileExt != "featureXML") {
+        output$textOutput <- renderText({
+          "Error: feature set A file must in featureXML format"
+        })
+      }
+      req(fileExt == "featureXML")
+
+      # Next load feature set B
+      if (is.null(input$featureFileB)) {
+        output$textOutput <- renderText({
+          "Error: no featureXML file for feature set B has been selected"
+        })
+      }
+      featureFilePathB <- input$featureFileB$datapath
+      req(featureFilePathB)
+
+      fileExt <- tools::file_ext(featureFilePathB)
+      if (fileExt != "featureXML") {
+        output$textOutput <- renderText({
+          "Error: feature set B file must in featureXML format"
+        })
+      }
+      req(fileExt == "featureXML")
+
+      # Plot the two feature sets
+      output$textOutput <- renderText({
+        "Current status: plotting both feature sets, please wait..."
+      })
+      plot <- msFeatureCmp::plotTwoFeatureSets(featureFilePathA,
+                                               featureFilePathB)
+
+      output$textOutput <- renderText({
+        "Current status: done plotting both feature sets"
+      })
+      output$plotOutput <- renderPlot({
+        plot
+      })
     }
     # Feature set A on raw data
     else if (input$pltOptions == 5) {
+      # Load raw data file first
+      if (is.null(input$rawDataFile)) {
+        output$textOutput <- renderText({
+          "Error: no mzML file has been selected"
+        })
+      }
+      rawDataFilePath <- input$rawDataFile$datapath
+      req(rawDataFilePath)
 
+      fileExt <- tools::file_ext(rawDataFilePath)
+      if (fileExt != "mzML") {
+        output$textOutput <- renderText({
+          "Error: raw data file must be in mzML format"
+        })
+      }
+      req(fileExt == "mzML")
+
+      # Next load feature set A
+      if (is.null(input$featureFileA)) {
+        output$textOutput <- renderText({
+          "Error: no featureXML file for feature set A has been selected"
+        })
+      }
+      featureFilePath <- input$featureFileA$datapath
+      req(featureFilePath)
+
+      fileExt <- tools::file_ext(featureFilePath)
+      if (fileExt != "featureXML") {
+        output$textOutput <- renderText({
+          "Error: feature set A file must in featureXML format"
+        })
+      }
+      req(fileExt == "featureXML")
+
+      # Plot feature set A on the raw data
+      output$textOutput <- renderText({
+        "Current status: plotting feature set A on the raw data, please wait..."
+      })
+      plot <- msFeatureCmp::plotFeatureSetOnRawData(rawDataFilePath,
+                                                    featureFilePath)
+
+      output$textOutput <- renderText({
+        "Current status: done plotting feature set A on the raw data"
+      })
+      output$plotOutput <- renderPlot({
+        plot
+      })
     }
     # Feature set B on raw data
     else if (input$pltOptions == 6) {
+      # Load raw data file first
+      if (is.null(input$rawDataFile)) {
+        output$textOutput <- renderText({
+          "Error: no mzML file has been selected"
+        })
+      }
+      rawDataFilePath <- input$rawDataFile$datapath
+      req(rawDataFilePath)
 
+      fileExt <- tools::file_ext(rawDataFilePath)
+      if (fileExt != "mzML") {
+        output$textOutput <- renderText({
+          "Error: raw data file must be in mzML format"
+        })
+      }
+      req(fileExt == "mzML")
+
+      # Next load feature set B
+      if (is.null(input$featureFileB)) {
+        output$textOutput <- renderText({
+          "Error: no featureXML file for feature set B has been selected"
+        })
+      }
+      featureFilePath <- input$featureFileB$datapath
+      req(featureFilePath)
+
+      fileExt <- tools::file_ext(featureFilePath)
+      if (fileExt != "featureXML") {
+        output$textOutput <- renderText({
+          "Error: feature set B file must in featureXML format"
+        })
+      }
+      req(fileExt == "featureXML")
+
+      # Plot feature set B on the raw data
+      output$textOutput <- renderText({
+        "Current status: plotting feature set B on the raw data, please wait..."
+      })
+      plot <- msFeatureCmp::plotFeatureSetOnRawData(rawDataFilePath,
+                                                    featureSetFilePath)
+
+      output$textOutput <- renderText({
+        "Current status: done plotting feature set B on the raw data"
+      })
+      output$plotOutput <- renderPlot({
+        plot
+      })
     }
   })
 
