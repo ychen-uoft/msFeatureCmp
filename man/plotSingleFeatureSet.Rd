@@ -10,7 +10,7 @@ plotSingleFeatureSet(featureFilePath)
 \item{featureFilePath}{The location of the featureXML file, as a string.}
 }
 \value{
-Nothing. The graph is outputted to the screen.
+The feature set scatter plot.
 }
 \description{
 Plots a single feature set onto a blank scatter plot.

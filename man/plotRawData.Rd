@@ -10,7 +10,7 @@ plotRawData(rawDataFilePath)
 \item{rawDataFilePath}{The location of the mzML file, as a string.}
 }
 \value{
-Nothing. The plot is outputted to the screen.
+The raw data scatter plot.
 }
 \description{
 Plots a raw mass spectrometry dataset onto a scatter plot.

@@ -14,7 +14,7 @@ string.}
 string.}
 }
 \value{
-Nothing. The plot is outputted to the screen.
+The overlapping feature scatter plot.
 }
 \description{
 Plots two feature sets, at the same time, onto a blank scatter plot. The two

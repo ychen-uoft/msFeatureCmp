@@ -12,7 +12,7 @@ plotFeatureSetOnRawData(rawDataFilePath, featureFilePath)
 \item{featureFilePath}{The location of the featureXML file, as a string.}
 }
 \value{
-Nothing. The plot is outputted to the screen.
+The overlayed feature/raw data scatter plot.
 }
 \description{
 Creates a scatter plot, where the given feature set is layered on top of its

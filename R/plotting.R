@@ -77,7 +77,7 @@ generateMSDataFrame <- function(rawDataFilePath) {
 #'
 #' @param rawDataFilePath The location of the mzML file, as a string.
 #'
-#' @return Nothing. The plot is outputted to the screen.
+#' @return The raw data scatter plot.
 #'
 #' @examples
 #' \dontrun{
@@ -88,11 +88,13 @@ generateMSDataFrame <- function(rawDataFilePath) {
 #' @import ggplot2
 plotRawData <- function(rawDataFilePath) {
   msDataFrame <- generateMSDataFrame(rawDataFilePath)
-  ggplot2::ggplot(msDataFrame,
-                  ggplot2::aes(x = RetentionTime,
-                               y = MassToCharge,
-                               colour = Intensity)) + ggplot2::geom_point()
-  return(invisible(NULL))
+  rawDataPlot <- ggplot2::ggplot(msDataFrame,
+                                 ggplot2::aes(x = RetentionTime,
+                                              y = MassToCharge,
+                                              colour = Intensity)) +
+    ggplot2::geom_point()
+
+  return(rawDataPlot)
 }
 
 #' Data frame generator.
@@ -134,7 +136,7 @@ generateFeatureDataFrame <- function(featureFilePath) {
 #'
 #' @param featureFilePath The location of the featureXML file, as a string.
 #'
-#' @return Nothing. The graph is outputted to the screen.
+#' @return The feature set scatter plot.
 #'
 #' @examples
 #' \dontrun{
@@ -145,11 +147,13 @@ generateFeatureDataFrame <- function(featureFilePath) {
 #' @import ggplot2
 plotSingleFeatureSet <- function(featureFilePath) {
   featureDataFrame <- generateFeatureDataFrame(featureFilePath)
-  ggplot2::ggplot(featureDataFrame,
-                  ggplot2::aes(x = RetentionTime,
-                               y = MassToCharge,
-                               colour = Intensity)) + ggplot2::geom_point()
-  return(invisible(NULL))
+  featureDataPlot <- ggplot2::ggplot(featureDataFrame,
+                                     ggplot2::aes(x = RetentionTime,
+                                                  y = MassToCharge,
+                                                  colour = Intensity)) +
+    ggplot2::geom_point()
+
+  return(featureDataPlot)
 }
 
 #' Overlapping feature set plotter.
@@ -167,7 +171,7 @@ plotSingleFeatureSet <- function(featureFilePath) {
 #' @param featureFilePath2 The location of the second featureXML file, as a
 #' string.
 #'
-#' @return Nothing. The plot is outputted to the screen.
+#' @return The overlapping feature scatter plot.
 #'
 #' @examples
 #' \dontrun{
@@ -190,12 +194,13 @@ plotTwoFeatureSets <- function(featureFilePath1, featureFilePath2) {
 
   # Add the second data frame to the first and plot the result
   featureDataFrame <- rbind(featureDataFrameA, featureDataFrameB)
-  ggplot2::ggplot(featureDataFrame,
-                  ggplot2::aes(x = RetentionTime,
-                               y = MassToCharge,
-                               colour = Type)) + ggplot2::geom_point()
+  featureDataPlot <- ggplot2::ggplot(featureDataFrame,
+                                     ggplot2::aes(x = RetentionTime,
+                                                  y = MassToCharge,
+                                                  colour = Type)) +
+    ggplot2::geom_point()
 
-  return(invisible(NULL))
+  return(featureDataPlot)
 }
 
 #' Layered feature set plotter.
@@ -212,7 +217,7 @@ plotTwoFeatureSets <- function(featureFilePath1, featureFilePath2) {
 #' @param rawDataFilePath The location of the mzML file, as a string.
 #' @param featureFilePath The location of the featureXML file, as a string.
 #'
-#' @return Nothing. The plot is outputted to the screen.
+#' @return The overlayed feature/raw data scatter plot.
 #'
 #' @examples
 #' \dontrun{
@@ -235,10 +240,11 @@ plotFeatureSetOnRawData <- function(rawDataFilePath, featureFilePath) {
   featureDataFrame <- cbind(featureDataFrame, Type)
 
   totalDataFrame <- rbind(msDataFrame, featureDataFrame)
-  ggplot2::ggplot(totalDataFrame,
-                  ggplot2::aes(x = RetentionTime,
-                               y = MassToCharge,
-                               colour = Type)) + ggplot2::geom_point()
+  totalDataPlot <- ggplot2::ggplot(totalDataFrame,
+                                   ggplot2::aes(x = RetentionTime,
+                                                y = MassToCharge,
+                                                colour = Type)) +
+    ggplot2::geom_point()
 
   return(invisible(NULL))
 }

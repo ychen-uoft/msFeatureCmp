@@ -62,6 +62,71 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
+  output$textOutput <- renderText({
+    "Current status: OK"
+  })
+
+  # Run button clicked (in Compare)
+  observeEvent(input$runCmp, {
+
+  })
+
+  # Plot button clicked (in Plot)
+  observeEvent(input$runPlt, {
+    # Raw data
+    if (input$pltOptions == 1) {
+      # Check if a file has been uploaded
+      if (is.null(input$rawDataFile)) {
+        output$textOutput <- renderText({
+          "Error: no mzML file has been selected"
+        })
+      }
+      rawDataFilePath <- input$rawDataFile$datapath
+      req(rawDataFilePath)
+
+      # Check if the file is in mzML format
+      fileExt <- tools::file_ext(rawDataFilePath)
+      if (fileExt != "mzML") {
+        output$textOutput <- renderText({
+          "Error: raw data file must be in mzML format"
+        })
+      }
+      req(fileExt == "mzML")
+
+      output$textOutput <- renderText({
+        "Current status: plotting raw data, please wait..."
+      })
+      plot <- msFeatureCmp::plotRawData(rawDataFilePath)
+
+      output$textOutput <- renderText({
+        "Current status: done plotting raw data"
+      })
+      output$plotOutput <- renderPlot({
+        plot
+      })
+    }
+    # Feature set A
+    else if (input$pltOptions == 2) {
+
+    }
+    # Feature set B
+    else if (input$pltOptions == 3) {
+
+    }
+    # Both feature sets
+    else if (input$pltOptions == 4) {
+
+    }
+    # Feature set A on raw data
+    else if (input$pltOptions == 5) {
+
+    }
+    # Feature set B on raw data
+    else if (input$pltOptions == 6) {
+
+    }
+  })
+
   return(invisible(NULL))
 }
 
