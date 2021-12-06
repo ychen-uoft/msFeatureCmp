@@ -1,7 +1,7 @@
 # comparator.R
 # Package: msFeatureCmp
 # Author: Yijia Chen
-# Date: 2021-12-04
+# Date: 2021-12-05
 # Version: 0.1.0
 
 # This file contains all the public APIs for the msFeatureCmp package.
@@ -261,20 +261,24 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
 #' @import reticulate
 getFeatureByIdx <- function(featureFilePath, idx) {
   ropenms <- reticulate::import("pyopenms", convert = FALSE)
+  retInfo <- NULL
 
   featureSet <- loadFeatureFile(featureFilePath)
   featureSet$sortByRT()
   if (idx < 1 | idx > reticulate::py_to_r(featureSet$size())) {
-    errMsg <- paste("Cannot get feature from", featureFilePath, "with index",
-                    idx, " (out of range)")
-    stop(errMsg)
+    retInfo <- paste("Error: cannot get feature from", featureFilePath,
+                     "with index", idx, " (out of range)")
+  }
+  else
+  {
+    feature <- featureSet[idx]
+    retInfo <- c(reticulate::py_to_r(feature$getRT()),
+                 reticulate::py_to_r(feature$getMZ()),
+                 reticulate::py_to_r(feature$getIntensity()))
   }
 
-  feature <- featureSet[idx]
-  retInfo <- c(reticulate::py_to_r(feature$getRT()),
-               reticulate::py_to_r(feature$getMZ()),
-               reticulate::py_to_r(feature$getIntensity()))
   return(retInfo)
 }
 
 # [END]
+

@@ -38,7 +38,7 @@ library("msFeatureCmp")
 
 To run the Shiny app:
 ``` r
-Under construction
+runMsFeatureCmp()
 ```
 
 If R has trouble finding the correct Python environment (and you have checked that all the Python prerequisites outlined above have been installed properly), then you can set it by hand with `Sys.setenv(RETICULATE_PYTHON = "<path to the correct Python binary>")` before installing the package.

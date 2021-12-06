@@ -1,7 +1,7 @@
 # app.R
 # Package: msFeatureCmp
 # Author: Yijia Chen
-# Date: 2021-12-04
+# Date: 2021-12-05
 # Version: 0.1.0
 
 # This file contains the source for the package's shiny app.
@@ -55,7 +55,8 @@ ui <- fluidPage(
       h4("Output", align = "center"),
       textOutput("textOutput"),
       br(),
-      tableOutput("tableOutput"),
+      verbatimTextOutput("vtextOutput"),
+      br(),
       plotOutput("plotOutput"),
       width = 7
     )
@@ -69,14 +70,7 @@ server <- function(input, output) {
 
   # Run button clicked (in Compare)
   observeEvent(input$runCmp, {
-
-  })
-
-  # TODO: reduce duplicate code
-  # Plot button clicked (in Plot)
-  observeEvent(input$runPlt, {
-    # Raw data
-    if (input$pltOptions == 1) {
+    if (input$cmpOptions == 1) {
       # Check if a file has been uploaded
       if (is.null(input$rawDataFile)) {
         output$textOutput <- renderText({
@@ -87,6 +81,148 @@ server <- function(input, output) {
       req(rawDataFilePath)
 
       # Check if the file is in mzML format
+      fileExt <- tools::file_ext(rawDataFilePath)
+      if (fileExt != "mzML") {
+        output$textOutput <- renderText({
+          "Error: raw data file must be in mzML format"
+        })
+      }
+      req(fileExt == "mzML")
+
+      # Do the same for feature set A
+      if (is.null(input$featureFileA)) {
+        output$textOutput <- renderText({
+          "Error: no featureXML file for feature set A has been selected"
+        })
+      }
+      featureFilePathA <- input$featureFileA$datapath
+      req(featureFilePathA)
+
+      fileExt <- tools::file_ext(featureFilePathA)
+      if (fileExt != "featureXML") {
+        output$textOutput <- renderText({
+          "Error: feature set A file must in featureXML format"
+        })
+      }
+      req(fileExt == "featureXML")
+
+      # Do the same for feature set B
+      if (is.null(input$featureFileB)) {
+        output$textOutput <- renderText({
+          "Error: no featureXML file for feature set B has been selected"
+        })
+      }
+      featureFilePathB <- input$featureFileB$datapath
+      req(featureFilePathB)
+
+      fileExt <- tools::file_ext(featureFilePathB)
+      if (fileExt != "featureXML") {
+        output$textOutput <- renderText({
+          "Error: feature set B file must in featureXML format"
+        })
+      }
+      req(fileExt == "featureXML")
+
+      # Interface with the main package and capture the output
+      output$textOutput <- renderText({
+        "Current status: comparing features between sets"
+      })
+      cmpResults <- capture.output(msFeatureCmp::compareFeatures(rawDataFilePath,
+                                                                 featureFilePathA,
+                                                                 featureFilePathB))
+
+      output$textOutput <- renderText({
+        "Current status: done comparing features between sets"
+      })
+      # Captured output is stored per-line in a character vector, so concatenate
+      # everything into a single string for output
+      displayStr <- "Feature comparison results:"
+      for (line in cmpResults) {
+        displayStr <- paste(displayStr, line, sep = "\n")
+      }
+      output$vtextOutput <- renderText({
+        displayStr
+      })
+    }
+    else if (input$cmpOptions == 2) {
+      if (is.null(input$featureFileA)) {
+        output$textOutput <- renderText({
+          "Error: no featureXML file for feature set A has been selected"
+        })
+      }
+      featureFilePath <- input$featureFileA$datapath
+      req(featureFilePath)
+
+      fileExt <- tools::file_ext(featureFilePath)
+      if (fileExt != "featureXML") {
+        output$textOutput <- renderText({
+          "Error: feature set A file must in featureXML format"
+        })
+      }
+      req(fileExt == "featureXML")
+
+      output$textOutput <- renderText({
+        "Current status: finding feature in feature set A"
+      })
+      featureInfo <- capture.output(msFeatureCmp::getFeatureByIdx(
+        featureFilePath, input$featureIdx))
+
+      output$textOutput <- renderText({
+        "Current status: done looking for feature in feature set A.
+        The three values below are retention time (sec), mass-to-charge (Th),
+        and signal intensity (unitless)"
+      })
+      output$vtextOutput <- renderText({
+        featureInfo
+      })
+    }
+    else if (input$cmpOptions == 3) {
+      if (is.null(input$featureFileB)) {
+        output$textOutput <- renderText({
+          "Error: no featureXML file for feature set A has been selected"
+        })
+      }
+      featureFilePath <- input$featureFileB$datapath
+      req(featureFilePath)
+
+      fileExt <- tools::file_ext(featureFilePath)
+      if (fileExt != "featureXML") {
+        output$textOutput <- renderText({
+          "Error: feature set A file must in featureXML format"
+        })
+      }
+      req(fileExt == "featureXML")
+
+      output$textOutput <- renderText({
+        "Current status: finding feature in feature set A"
+      })
+      featureInfo <- capture.output(msFeatureCmp::getFeatureByIdx(
+        featureFilePath, input$featureIdx))
+
+      output$textOutput <- renderText({
+        "Current status: done looking for feature in feature set A.
+        The three values below are retention time (sec), mass-to-charge (Th),
+        and signal intensity (unitless)"
+      })
+      output$vtextOutput <- renderText({
+        featureInfo
+      })
+    }
+  })
+
+  # TODO: reduce duplicate code
+  # Plot button clicked (in Plot)
+  observeEvent(input$runPlt, {
+    # Raw data
+    if (input$pltOptions == 1) {
+      if (is.null(input$rawDataFile)) {
+        output$textOutput <- renderText({
+          "Error: no mzML file has been selected"
+        })
+      }
+      rawDataFilePath <- input$rawDataFile$datapath
+      req(rawDataFilePath)
+
       fileExt <- tools::file_ext(rawDataFilePath)
       if (fileExt != "mzML") {
         output$textOutput <- renderText({

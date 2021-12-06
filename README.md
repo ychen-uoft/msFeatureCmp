@@ -43,7 +43,7 @@ library("msFeatureCmp")
 To run the Shiny app:
 
 ``` r
-Under construction
+runMsFeatureCmp()
 ```
 
 If R has trouble finding the correct Python environment (and you have
