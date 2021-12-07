@@ -1,7 +1,7 @@
 # plotting.R
 # Package: msFeatureCmp
 # Author: Yijia Chen
-# Date: 2021-12-04
+# Date: 2021-12-06
 # Version: 0.1.0
 
 # This file contains all the public visualization functions for the
@@ -92,7 +92,10 @@ plotRawData <- function(rawDataFilePath) {
                                  ggplot2::aes(x = RetentionTime,
                                               y = MassToCharge,
                                               colour = Intensity)) +
-    ggplot2::geom_point()
+    ggplot2::geom_point() +
+    ggplot2::ggtitle("LC-MS Raw Data Scan") +
+    ggplot2::xlab("Retention time (sec)") +
+    ggplot2::ylab("Mass-to-charge (Th)")
 
   return(rawDataPlot)
 }
@@ -151,7 +154,10 @@ plotSingleFeatureSet <- function(featureFilePath) {
                                      ggplot2::aes(x = RetentionTime,
                                                   y = MassToCharge,
                                                   colour = Intensity)) +
-    ggplot2::geom_point()
+    ggplot2::geom_point() +
+    ggplot2::ggtitle("One Set of Features") +
+    ggplot2::xlab("Retention time (sec)") +
+    ggplot2::ylab("Mass-to-charge (Th)")
 
   return(featureDataPlot)
 }
@@ -198,7 +204,10 @@ plotTwoFeatureSets <- function(featureFilePath1, featureFilePath2) {
                                      ggplot2::aes(x = RetentionTime,
                                                   y = MassToCharge,
                                                   colour = Type)) +
-    ggplot2::geom_point()
+    ggplot2::geom_point() +
+    ggplot2::ggtitle("Two Sets of Features") +
+    ggplot2::xlab("Retention time (sec)") +
+    ggplot2::ylab("Mass-to-charge (Th)")
 
   return(featureDataPlot)
 }
@@ -244,9 +253,12 @@ plotFeatureSetOnRawData <- function(rawDataFilePath, featureFilePath) {
                                    ggplot2::aes(x = RetentionTime,
                                                 y = MassToCharge,
                                                 colour = Type)) +
-    ggplot2::geom_point()
+    ggplot2::geom_point() +
+    ggplot2::ggtitle("LC-MS Raw Data + Feature Set") +
+    ggplot2::xlab("Retention time (sec)") +
+    ggplot2::ylab("Mass-to-charge (Th)")
 
-  return(invisible(NULL))
+  return(totalDataPlot)
 }
 
 # [END]

@@ -1,7 +1,7 @@
 # app.R
 # Package: msFeatureCmp
 # Author: Yijia Chen
-# Date: 2021-12-05
+# Date: 2021-12-06
 # Version: 0.1.0
 
 # This file contains the source for the package's shiny app.
@@ -445,7 +445,7 @@ server <- function(input, output) {
         "Current status: plotting feature set B on the raw data, please wait..."
       })
       plot <- msFeatureCmp::plotFeatureSetOnRawData(rawDataFilePath,
-                                                    featureSetFilePath)
+                                                    featureFilePath)
 
       output$textOutput <- renderText({
         "Current status: done plotting feature set B on the raw data"
