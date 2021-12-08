@@ -12,12 +12,19 @@ getFeatureByIdx(featureFilePath, idx)
 \item{idx}{The index of the required feature in the set, as an integer.}
 }
 \value{
-The specified feature's RT, m/z, and intensity, as a string.
+The specified feature's RT, m/z, and intensity, as a string. An
+error message if the provided index is out of range.
 }
 \description{
 Gets information (in particular, retention time, mass-to-charge, and signal
 intensity) for the feature at the given index in the given feature file. If
-the feature does not exist, an error is thrown.
+the feature does not exist, an error is returned (in the string).
+}
+\details{
+This function may not necessarily be directly helpful in comparing multiple
+feature sets, but if a specific feature is known, or a rough idea of a
+range of features is needed, this function serves as a quick lookup for
+that information.
 }
 \examples{
 \dontrun{

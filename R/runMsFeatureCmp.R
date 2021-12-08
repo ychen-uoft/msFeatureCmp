@@ -1,7 +1,7 @@
 # runMsFeatureCmp.R
 # Package: msFeatureCmp
 # Author: Yijia Chen
-# Date: 2021-12-04
+# Date: 2021-12-08
 # Version: 0.1.0
 
 # This file contains the point of entry for the shiny app.
@@ -11,7 +11,7 @@
 #' Launches the shiny app for the package (msFeatureCmp). The shiny code is
 #' located in \code{./inst/shiny-scripts}.
 #'
-#' @return Nothing.
+#' @return Nothing. The shiny app is launched.
 #'
 #' @examples
 #' \dontrun{

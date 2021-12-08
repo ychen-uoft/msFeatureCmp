@@ -7,7 +7,7 @@
 runMsFeatureCmp()
 }
 \value{
-Nothing.
+Nothing. The shiny app is launched.
 }
 \description{
 Launches the shiny app for the package (msFeatureCmp). The shiny code is

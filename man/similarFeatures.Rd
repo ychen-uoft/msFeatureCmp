@@ -12,9 +12,11 @@ similarFeatures(
 )
 }
 \arguments{
-\item{feature1}{The first feature to compare.}
+\item{feature1}{The first feature to compare, as a Feature object or a
+vector from a feature matrix.}
 
-\item{feature2}{The second feature to compare.}
+\item{feature2}{The second feature to compare, as a Feature object or a
+vector from a feature matrix.}
 
 \item{rtThreshold}{The RT threshold to use, as a number.}
 
@@ -29,7 +31,9 @@ Compares two features to determine if they are similar.
 \details{
 We consider features to be similar if their retention times and mass-to-
 charge values are within some fixed threshold of each other, which can be
-determined and provided by the user.
+determined and provided by the user. Having a greater degree of similarity
+means that it is more likely that a close cluster of features can
+effectively be considered as just a single feature.
 
 The provided features can be ropenms Feature objects or vectors (e.g. from
 a feature matrix).

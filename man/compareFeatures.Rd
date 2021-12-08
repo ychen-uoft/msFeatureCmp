@@ -16,12 +16,19 @@ string.}
 string.}
 }
 \value{
-Nothing. A basic statistical analysis is printed to the screen.
+Nothing. A basic analysis is printed to the screen instead.
 }
 \description{
 Compares two sets of mass spectrometry features corresponding to a single MS
 run. This can be used to compare the results of different feature finding
 algorithms that have been run on the same raw dataset.
+}
+\details{
+A short summary, including the number of features that were found to be
+common to both sets of features, as well as statistical values such as
+recall, precision, and F_1 score, will be printed to the terminal.
+
+This function may take a while to run.
 }
 \examples{
 \dontrun{

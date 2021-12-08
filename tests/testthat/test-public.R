@@ -1,26 +1,26 @@
 # test-public.R
 # Package: msFeatureCmp
 # Author: Yijia Chen
-# Date: 2021-12-04
+# Date: 2021-12-08
 # Version: 0.1.0
 
 # This file contains all the public API integration tests.
 
 test_that("feature comparator pipeline works", {
-#   cmpOutput <- capture.output(
-#     msFeatureCmp::compareFeatures(
-#       system.file("extdata",
-#                   "20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML",
-#                   package = "msFeatureCmp"),
-#       system.file("extdata",
-#                   "featureSetA.featureXML",
-#                   package = "msFeatureCmp"),
-#       system.file("extdata",
-#                   "featureSetB.featureXML",
-#                   package = "msFeatureCmp")))
-#   outputStr <- paste(cmpOutput, collapse = "\n")
+  cmpOutput <- capture.output(
+    msFeatureCmp::compareFeatures(
+      system.file("extdata",
+                  "20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML",
+                  package = "msFeatureCmp"),
+      system.file("extdata",
+                  "featureSetA.featureXML",
+                  package = "msFeatureCmp"),
+      system.file("extdata",
+                  "featureSetB.featureXML",
+                  package = "msFeatureCmp")))
+  outputStr <- paste(cmpOutput, collapse = "\n")
 
-  # Dump-and-compare currently not working
+  # Dump and compare
   # refInput <- readLines(system.file("extdata", "pipeline-output.txt",
   #                                   package = "msFeatureCmp"))
   # expect_equal(outputStr, refInput)

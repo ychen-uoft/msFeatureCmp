@@ -25,7 +25,8 @@ strictly less than the target (its rank in the matrix).
 }
 \details{
 This function uses binary search to find the feature, so the feature matrix
-must be sorted ascending in the key column.
+must be sorted ascending in the key column. Otherwise there is no guarantee
+that the search will yield the correct result.
 }
 \examples{
 \dontrun{

@@ -1,7 +1,7 @@
 # plotting.R
 # Package: msFeatureCmp
 # Author: Yijia Chen
-# Date: 2021-12-06
+# Date: 2021-12-08
 # Version: 0.1.0
 
 # This file contains all the public visualization functions for the

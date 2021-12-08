@@ -1,16 +1,19 @@
 # app.R
 # Package: msFeatureCmp
 # Author: Yijia Chen
-# Date: 2021-12-06
+# Date: 2021-12-08
 # Version: 0.1.0
 
 # This file contains the source for the package's shiny app.
 
 # TODO: Need to refactor everything to use helper functions. There is a lot of
-# repeated code.
+# repeated code. The annoying part is shiny somehow bypasses error checks when
+# some code is combined, leading to an app crash. Also need to make sure the
+# error messages talk about the right thing/file.
 
 library("shiny")
 
+# Generate the UI elements
 ui <- fluidPage(
   titlePanel("msFeatureCmp: Mass Spectrometry Feature Comparator"),
 
@@ -66,13 +69,15 @@ ui <- fluidPage(
   )
 )
 
+# Link the UI elements to package functionality
 server <- function(input, output) {
   output$textOutput <- renderText({
-    "Current status: OK"
+    "Current status: Ready"
   })
 
   # Run button clicked (in Compare)
   observeEvent(input$runCmp, {
+    # See the radio button assignments in the UI setup above for constants
     if (input$cmpOptions == 1) {
       # Check if a file has been uploaded
       if (is.null(input$rawDataFile)) {
@@ -127,9 +132,6 @@ server <- function(input, output) {
       req(fileExt == "featureXML")
 
       # Interface with the main package and capture the output
-      output$textOutput <- renderText({
-        "Current status: comparing features between sets"
-      })
       cmpResults <- capture.output(msFeatureCmp::compareFeatures(rawDataFilePath,
                                                                  featureFilePathA,
                                                                  featureFilePathB))
@@ -147,6 +149,9 @@ server <- function(input, output) {
         displayStr
       })
     }
+    # Specific feature information retrieval for feature set A
+    # TODO: For some reason when I try to merge this block with the block for
+    # option 3 below, all the error checks are bypassed and shiny crashes.
     else if (input$cmpOptions == 2) {
       if (is.null(input$featureFileA)) {
         output$textOutput <- renderText({
@@ -164,9 +169,6 @@ server <- function(input, output) {
       }
       req(fileExt == "featureXML")
 
-      output$textOutput <- renderText({
-        "Current status: finding feature in feature set A"
-      })
       featureInfo <- capture.output(msFeatureCmp::getFeatureByIdx(
         featureFilePath, input$featureIdx))
 
@@ -179,6 +181,7 @@ server <- function(input, output) {
         featureInfo
       })
     }
+    # Specific feature information retrieval for feature set B
     else if (input$cmpOptions == 3) {
       if (is.null(input$featureFileB)) {
         output$textOutput <- renderText({
@@ -196,9 +199,6 @@ server <- function(input, output) {
       }
       req(fileExt == "featureXML")
 
-      output$textOutput <- renderText({
-        "Current status: finding feature in feature set A"
-      })
       featureInfo <- capture.output(msFeatureCmp::getFeatureByIdx(
         featureFilePath, input$featureIdx))
 
@@ -213,7 +213,8 @@ server <- function(input, output) {
     }
   })
 
-  # TODO: reduce duplicate code
+  # TODO: Way too much duplicate code. Should have a helper function for
+  # loading/checking files and also maybe printing the results.
   # Plot button clicked (in Plot)
   observeEvent(input$runPlt, {
     # Raw data
@@ -234,9 +235,6 @@ server <- function(input, output) {
       }
       req(fileExt == "mzML")
 
-      output$textOutput <- renderText({
-        "Current status: plotting raw data, please wait..."
-      })
       # Interface with the main package and plot the results
       plot <- msFeatureCmp::plotRawData(rawDataFilePath)
 
@@ -265,9 +263,6 @@ server <- function(input, output) {
       }
       req(fileExt == "featureXML")
 
-      output$textOutput <- renderText({
-        "Current status: plotting feature set A, please wait..."
-      })
       plot <- msFeatureCmp::plotSingleFeatureSet(featureFilePath)
 
       output$textOutput <- renderText({
@@ -295,9 +290,6 @@ server <- function(input, output) {
       }
       req(fileExt == "featureXML")
 
-      output$textOutput <- renderText({
-        "Current status: plotting feature set B, please wait..."
-      })
       plot <- msFeatureCmp::plotSingleFeatureSet(featureFilePath)
 
       output$textOutput <- renderText({
@@ -344,9 +336,6 @@ server <- function(input, output) {
       req(fileExt == "featureXML")
 
       # Plot the two feature sets
-      output$textOutput <- renderText({
-        "Current status: plotting both feature sets, please wait..."
-      })
       plot <- msFeatureCmp::plotTwoFeatureSets(featureFilePathA,
                                                featureFilePathB)
 
@@ -394,9 +383,6 @@ server <- function(input, output) {
       req(fileExt == "featureXML")
 
       # Plot feature set A on the raw data
-      output$textOutput <- renderText({
-        "Current status: plotting feature set A on the raw data, please wait..."
-      })
       plot <- msFeatureCmp::plotFeatureSetOnRawData(rawDataFilePath,
                                                     featureFilePath)
 
@@ -444,9 +430,6 @@ server <- function(input, output) {
       req(fileExt == "featureXML")
 
       # Plot feature set B on the raw data
-      output$textOutput <- renderText({
-        "Current status: plotting feature set B on the raw data, please wait..."
-      })
       plot <- msFeatureCmp::plotFeatureSetOnRawData(rawDataFilePath,
                                                     featureFilePath)
 

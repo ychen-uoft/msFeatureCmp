@@ -1,7 +1,7 @@
 # comparator.R
 # Package: msFeatureCmp
 # Author: Yijia Chen
-# Date: 2021-12-05
+# Date: 2021-12-08
 # Version: 0.1.0
 
 # This file contains all the public APIs for the msFeatureCmp package.
@@ -23,13 +23,19 @@ MZ_THRESHOLD <- 0.01
 #' run. This can be used to compare the results of different feature finding
 #' algorithms that have been run on the same raw dataset.
 #'
+#' A short summary, including the number of features that were found to be
+#' common to both sets of features, as well as statistical values such as
+#' recall, precision, and F_1 score, will be printed to the terminal.
+#'
+#' This function may take a while to run.
+#'
 #' @param rawDataFilePath The location of the mzML raw data file, as a string.
 #' @param featureFilePath1 The location of the first featureXML file, as a
 #' string.
 #' @param featureFilePath2 The location of the second featureXML file, as a
 #' string.
 #'
-#' @return Nothing. A basic statistical analysis is printed to the screen.
+#' @return Nothing. A basic analysis is printed to the screen instead.
 #'
 #' @examples
 #' \dontrun{
@@ -110,7 +116,8 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
     }
   }
 
-  # b) Use the second feature set as the reference set
+  # b) Use the second feature set as the reference set. The process is similar
+  # to using the first feature set as the reference set.
   for (i in 1:reticulate::py_to_r(featureSetB$size())) {
     featureB <- featureMatrixB[i, ]
     similarIdx <- findFirstFeature(featureMatrixA,
@@ -122,6 +129,8 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
     }
     featureA <- featureMatrixA[similarIdx, ]
 
+    # It is provable that this loop (and the one above) will never result in an
+    # infinite loop
     while (TRUE) {
       if (similarFeatures(featureB, featureA)) {
         numSimilarFeatures <- numSimilarFeatures + 1
@@ -147,6 +156,8 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
   }
 
   # 2 - Number crunching
+  # This output can be captured into a character vector by wrapping a call with
+  # capture.output
   cat("\nmsFeatureCmp results\n")
   cat("Raw data file :", rawDataFilePath, "\n")
   cat("Feature file 1:", featureFilePath1, "\n")
@@ -165,7 +176,7 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
   cat("Features in set 1:", reticulate::py_to_r(featureSetA$size()), "\n")
   cat("Features in set 2:", reticulate::py_to_r(featureSetB$size()), "\n\n")
 
-  # a) Direct comparison
+  # a) Direct comparison between both feature sets
   totalNumFeatures <- reticulate::py_to_r(featureSetA$size()) +
     reticulate::py_to_r(featureSetB$size())
   totalUnmatchedFeatures <- numUnmatchedFeaturesA + numUnmatchedFeaturesB
@@ -202,8 +213,9 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
   percentMultiplyMatched <- (numMultiplyMatchedFeaturesAB /
                                reticulate::py_to_r(featureSetA$size())) * 100
 
-  # Prints some common statistics. Like a lambda function, only visible here.
-  #
+  # Prints some common statistics. I chose to not make this a global helper
+  # function because it is more like a macro or an inline function that will
+  # only ever be used in this function.
   # zeroMatches: The number of unmatched features, as an integer
   # multipleMatches: The number of multiply matched features, as an integer
   printSomeStats <- function(zeroMatches, multipleMatches) {
@@ -245,12 +257,18 @@ compareFeatures <- function(rawDataFilePath, featureFilePath1,
 #'
 #' Gets information (in particular, retention time, mass-to-charge, and signal
 #' intensity) for the feature at the given index in the given feature file. If
-#' the feature does not exist, an error is thrown.
+#' the feature does not exist, an error is returned (in the string).
+#'
+#' This function may not necessarily be directly helpful in comparing multiple
+#' feature sets, but if a specific feature is known, or a rough idea of a
+#' range of features is needed, this function serves as a quick lookup for
+#' that information.
 #'
 #' @param featureFilePath The location of the featureXML file, as a string.
 #' @param idx The index of the required feature in the set, as an integer.
 #'
-#' @return The specified feature's RT, m/z, and intensity, as a string.
+#' @return The specified feature's RT, m/z, and intensity, as a string. An
+#' error message if the provided index is out of range.
 #'
 #' @examples
 #' \dontrun{
@@ -281,4 +299,3 @@ getFeatureByIdx <- function(featureFilePath, idx) {
 }
 
 # [END]
-

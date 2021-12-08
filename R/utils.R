@@ -1,7 +1,7 @@
 # utils.R
 # Package: msFeatureCmp
 # Author: Yijia Chen
-# Date: 2021-12-04
+# Date: 2021-12-08
 # Version: 0.1.0
 
 # This file contains all the private helper functions for the msFeatureCmp
@@ -89,13 +89,17 @@ withinThreshold <- function(value1, value2, threshold) {
 #'
 #' We consider features to be similar if their retention times and mass-to-
 #' charge values are within some fixed threshold of each other, which can be
-#' determined and provided by the user.
+#' determined and provided by the user. Having a greater degree of similarity
+#' means that it is more likely that a close cluster of features can
+#' effectively be considered as just a single feature.
 #'
 #' The provided features can be ropenms Feature objects or vectors (e.g. from
 #' a feature matrix).
 #'
-#' @param feature1 The first feature to compare.
-#' @param feature2 The second feature to compare.
+#' @param feature1 The first feature to compare, as a Feature object or a
+#' vector from a feature matrix.
+#' @param feature2 The second feature to compare, as a Feature object or a
+#' vector from a feature matrix.
 #' @param rtThreshold The RT threshold to use, as a number.
 #' @param mzThreshold The m/z threshold to use, as a number.
 #'
@@ -125,7 +129,9 @@ similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
       isSimilar <- TRUE
     }
   }
-  # If the features are Features in a set
+  # If the features are Features in a set. Further type checking is not
+  # necessary because these helper functions should never be exposed to the
+  # user.
   else {
     rtA <- reticulate::py_to_r(feature1$getRT())
     mzA <- reticulate::py_to_r(feature1$getMZ())
@@ -162,7 +168,7 @@ similarFeatures <- function(feature1, feature2, rtThreshold = RT_THRESHOLD,
 sortMatrixByColumn <- function(matrix, column = 1L, descending = FALSE) {
   # Need to enforce that the column is an integer
   if (typeof(column) != "integer") {
-    cat("msFeatureCmp::sortMatrixByColumn must take an int as column number\n")
+    stop("msFeatureCmp::sortMatrixByColumn must take an int as column number\n")
   }
   # key <- paste("V", column, sep = "")
   sortedMatrix <- matrix[order(matrix[, column], decreasing = descending), ]
@@ -218,7 +224,8 @@ convertFeaturesToSortedMatrix <- function(featureSet) {
 #' strictly less than the target (its rank in the matrix).
 #'
 #' This function uses binary search to find the feature, so the feature matrix
-#' must be sorted ascending in the key column.
+#' must be sorted ascending in the key column. Otherwise there is no guarantee
+#' that the search will yield the correct result.
 #'
 #' @param sortedFeatureMatrix The sorted feature matrix to search.
 #' @param key The column in the matrix to search in.
