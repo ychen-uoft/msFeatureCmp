@@ -6,6 +6,9 @@
 
 # This file contains the source for the package's shiny app.
 
+# TODO: Need to refactor everything to use helper functions. There is a lot of
+# repeated code.
+
 library("shiny")
 
 ui <- fluidPage(

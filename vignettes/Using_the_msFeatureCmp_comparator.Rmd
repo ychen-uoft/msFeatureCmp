@@ -1,5 +1,5 @@
 ---
-title: "Introduction"
+title: "Using the msFeatureCmp feature comparator"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction}
@@ -13,6 +13,10 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+## Background
+
+In proteomics, liquid chromatography-tandem mass spectrometry (LC-MS/MS) runs typically produce vast amounts of raw data that are difficult to interpret on their own. In order to make better use of such data and properly identify the proteins present in the selected samples, each peptide's precursor and fragment ion signals must be carefull found (we call these features). These features can be identified in the three-dimensional scans by their retention time (RT, measured in sec) in the liquid chromatography column, mass-to-charge (m/z, measured in Th), and signal intensity (relative and unitless) in the mass spectrometer. There are several established algorithms already, including the popular MaxQuant software suite (Max Plank Institute), as well as OpenMS (open-source), but as technology improves and new hardware is designed, it may be necessary to develop new algorithms that can better detect features. This comparator offers a method to compare different feature finding algorithms by comparing their results, and may aid developers in fine-tuning their work.
 
 ## Description
 
@@ -34,7 +38,7 @@ library("msFeatureCmp")
 
 To run the Shiny app:
 ``` r
-Under construction
+runMsFeatureCmp()
 ```
 
 If R has trouble finding the correct Python environment (and you have checked that all the Python prerequisites outlined above have been installed properly), then you can set it by hand with `Sys.setenv(RETICULATE_PYTHON = "<path to the correct Python binary>")` before installing the package.
@@ -54,6 +58,36 @@ Using the example raw files provided in `inst/extdata`, execution may take sever
 `plotTwoFeatureSets(featureFilePath1, featureFilePath2)`: this function "duplicates" the functionality of the previous function, plotting out two sets of found features (featureXML) in a two-dimensional scatter plot, with the second set overlaid atop the first.
 
 `plotFeatureSetOnRawData(rawDataFilePath, featureFilePath)`: this function combines the functionality of the first two visualization functions and takes both a raw mass spectrometry data file (mzML) as well as a feature set file (featureXML), and plots both in a two-dimensional scatter plot, with the features overlaid atop the raw data. It is important to note that the features may not exactly line up with the raw data, as mass spectometers have a limited scan speed.
+
+## Example Workflow
+
+Included in the msFeatureCmp package are three example files, all located in inst/extdata: *20190122_HeLa_QC_Slot1-47_1_3228_800-810.mzML*, *featureSetA.featureXML*, and *featureSetB.featureXML*. The mzML file is a raw MS data file in the open-source OpenMS mzML format, and the two featureXML files are sets of features found by two different feature finders, stored in the open-source OpenMS featureXML format. For more information on how these files were obtained and processed, please see the **Contributions** section of this package's README in [GitHub](https://github.com/ychen-uoft/msFeatureCmp).
+
+The primary comparison workflow includes only a single function: `compareFeatures` (see the prior section for more information on how it works). If we wanted to do a basic comparison and statistical analysis of these two feature sets, we would run:
+
+``` r
+compareFeatures(<path to mzML file>, <path to featureSetA>, <path to featureSetB>)
+```
+
+If using the Shiny app, the three files can first be uploaded via the "Load data" tab, and the comparison can be started by going to the "Compare" tab, selecting "Compare both feature sets", followed by the "Run" button.
+
+The results will look like this:
+
+![Example command line comparison results](comparison_results.png)
+
+The first two blocks of text give us some information about the files themselves: their provided file paths, the number of spectra and data points in the raw data, and the number of found features in each feature set. The following three blocks provide a very basic statistical analysis, including the calculation of the number of features in common between both feature sets and the number of "similar" mappings from one feature in one set to other feature(s) in the other set. We also see what happens if we choose one set of features to be a "ground truth"; i.e. using it as a reference and mapping the other set to it, which allows us to compute values such as recall, precision, and F_1 score (we are able to do this both ways because for these experiments, there is no completely "right answer" and feature finder results can only be compared relatively to one another).
+
+If we wanted to see a visualization of these results, there are several different scatter plots that can be produced. These include the four plotting functions (with name starting with *plot*), or by going to the "Plot" tab in the Shiny app and selecting any one of the six options. For example, if we wanted to see how the locations of the features on the 2D LC-MS scan relate, we could run
+
+``` r
+plotTwoFeatureSets(<path to featureSetA>, <path to featureSetB>)
+```
+
+The results will look like this:
+
+![Example overlapping feature set plot](plotting_output.png)
+
+This above image shows the result of running the plotter via the Shiny app--if run from the terminal, only the graph underneath "Output" will be produced. Here, we have a scatter plot where the x-axis represents the retention time in the liquid chromatography column (before entering the mass spectrometer proper) in sec, and the y-axis represents mass-to-charge in the mass spectrometer in Th. The two sets of features are coloured differently in order to better determine which features (dots) come from which data set, and the label on the Right ("Type") indicates which colour belongs to which set. In this case, the red-pink dots depict the features that were loaded from the first feature set (A) and the the blue-green dots depict the features that were loaded from the second feature set (B).
 
 ## References
 
